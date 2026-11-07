@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BandLab Studio</string>
+    <string name="title_activity_main">BandLab Studio</string>
+    <string name="package_name">com.qwenton.bandlabs</string>
+    <string name="custom_url_scheme">com.qwenton.bandlabs</string>
+</resources>

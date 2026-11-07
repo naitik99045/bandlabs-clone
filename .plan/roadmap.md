@@ -1,0 +1,65 @@
+# Project Execution Roadmap
+**Status:** Active
+**Instruction for Execution Agent:** Pick the first unchecked `[ ]` task in the current active phase, implement it completely without placeholders, verify it, and mark it `[x]`.
+
+## Phase 1: Foundation, Config & Scaffolding
+- [x] **Task 1.1: Project Initialization & Audio Stack Scaffolding**
+  - *Action:* Initialized Next.js 15 (App Router, TypeScript, Tailwind CSS, Lucide icons, Zustand, Tone.js, @breezystack/lamejs, @supabase/supabase-js, firebase). Configured `tsconfig.json`, `next.config.ts`, `.env.example`, and `.env.local`.
+  - *Target Files:* `package.json`, `tsconfig.json`, `next.config.ts`, `.env.example`, `.env.local`
+  - *Done When:* `npm run build` succeeds and dev server starts with zero errors.
+- [x] **Task 1.2: BandLab Studio Shell Layout & Dark Audio Tokens**
+  - *Action:* Built the BandLab dark studio layout shell: Top Transport Bar (Play/Pause/Record, BPM, Key, Time display, Master Volume, "Download Music" button), Left Track Header List, Central Timeline Arrangement View, and Bottom Vocal Setup & Beat Maker Dock.
+  - *Target Files:* `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/daw/TransportBar.tsx`, `src/components/daw/StudioLayout.tsx`, `src/styles/globals.css`
+  - *Done When:* Studio UI renders with high responsiveness, smooth transport bar, time ruler, and authentic BandLab dark DAW styling.
+
+## Phase 2: Data Layer, State & Authentication
+- [x] **Task 2.1: Supabase User Settings Store & Schema Client**
+  - *Action:* Configured Supabase client using URL `https://vbggacgvdbgtgvtyupvo.supabase.co` and publishable key. Defined `UserSettings` TypeScript schema. Created SQL migration file `supabase/user_settings.sql` with RLS policies and implemented client-side fetch/sync helpers with local fallback.
+  - *Target Files:* `src/types/settings.ts`, `src/lib/supabase/client.ts`, `src/lib/supabase/settingsService.ts`, `supabase/user_settings.sql`
+  - *Done When:* User settings can be fetched, updated, and persisted to Supabase with TypeScript safety.
+- [x] **Task 2.2: Firebase Auth Integration & User Profile Sync**
+  - *Action:* Initialized Firebase Client SDK with project `bandlabs-clone` and API key. Implemented `AuthContext` supporting Google OAuth, Email/Password, and 1-click Instant Guest login so users can produce immediately without barriers. Auto-provision default user settings in Supabase on login.
+  - *Target Files:* `src/lib/firebase/config.ts`, `src/context/AuthContext.tsx`, `src/components/settings/UserSettingsModal.tsx`
+  - *Done When:* User can authenticate seamlessly via Google, Email, or Guest; user UID links automatically to Supabase `user_settings`.
+
+## Phase 3: Core Feature Modules (Iterative Build)
+- [x] **Task 3.1: Web Audio Engine Core & Studio State Store**
+  - *Action:* Built the core audio engine using Web Audio API: master `AudioContext` singleton, high-precision clock scheduler (BPM, metronome click generator, playhead tracking), and Zustand store (`useStudioStore`) managing tracks, playhead state, zoom, and active selections.
+  - *Target Files:* `src/lib/audio/AudioEngine.ts`, `src/stores/useStudioStore.ts`
+  - *Done When:* Audio engine boots on user gesture, metronome clicks accurately in time with adjustable BPM, and playhead position syncs smoothly at 60fps.
+- [x] **Task 3.2: Vocal Recording, Mic Monitoring & Instrumental Beat Import**
+  - *Action:* Implemented microphone audio capture readiness and drag-and-drop import of instrumental backing beats (MP3/WAV) onto dedicated tracks with automated waveform peak extraction and visualization.
+  - *Target Files:* `src/components/daw/TrackLane.tsx`, `src/components/daw/TimelineView.tsx`, `src/lib/audio/AudioEngine.ts`
+  - *Done When:* User can drop in a backing beat and record live vocals over it with instant waveform feedback and playback synchronization.
+- [x] **Task 3.3: True Sound Modulations & Real-Time Pitch Shifter (AutoPitch DSP)**
+  - *Action:* Upgraded `src/lib/audio/dsp/EffectsRack.ts` and created `PitchShifterNode.ts` and `ModulationNode.ts` with real-time granular pitch shifting, LFO-driven chorus/vibrato modulation (depth & rate), and analog tube saturation. Connected AutoPitch scale, root key, and correction speed knobs directly to the audio processing graph.
+  - *Target Files:* `src/lib/audio/dsp/EffectsRack.ts`, `src/lib/audio/dsp/PitchShifterNode.ts`, `src/lib/audio/dsp/ModulationNode.ts`, `src/components/daw/VocalSuiteModal.tsx`
+  - *Done When:* Audio shifts pitch to the selected musical key in real time, and chorus/vibrato modulations are audible during playback and recording.
+- [x] **Task 3.4: Live Microphone Capture & Take Placer**
+  - *Action:* Built `src/lib/audio/MicRecorder.ts` with `navigator.mediaDevices.getUserMedia` and `MediaRecorder`. Connected the Transport bar `REC` button to capture vocal takes with live VU level monitoring, automatically decoding takes into waveform `AudioClip`s on the armed vocal track.
+  - *Target Files:* `src/lib/audio/MicRecorder.ts`, `src/components/daw/TransportBar.tsx`
+  - *Done When:* User can record their live voice from mic/headset, see it populate as a clip on the vocal track, and play it back with all vocal FX applied.
+- [x] **Task 3.5: 16-Step Beat Maker & Drum Machine**
+  - *Action:* Created a 16-step grid drum sequencer module supporting 8 channels (Kick, Snare, Clap, Closed Hat, Open Hat, 808 Bass, Perc, Crash). Included synthesized drum sound engine, step velocity, and real-time loop preview.
+  - *Target Files:* `src/components/daw/BeatMakerModal.tsx`, `src/lib/audio/AudioEngine.ts`, `src/stores/useStudioStore.ts`
+  - *Done When:* User can program drum patterns on the 16-step grid, audition sounds, and loop them seamlessly in sync with the master project BPM.
+- [x] **Task 3.6: "Download / Install Music" Mixdown Engine**
+  - *Action:* Implemented client-side `OfflineAudioContext` multi-track render engine. When user clicks "Download Music", it gathers all active vocal additions (with AutoPitch and FX applied), imported beats, and drum patterns, renders the final mixdown faster-than-realtime, and encodes to 320kbps MP3 or 24-bit WAV using `@breezystack/lamejs`. Triggers instant browser file download.
+  - *Target Files:* `src/lib/audio/MixdownExporter.ts`, `src/lib/audio/WavEncoder.ts`, `src/components/daw/TransportBar.tsx`
+  - *Done When:* User can click "Download Music" and instantly receive the fully rendered audio file containing all their vocal additions, beat customizations, and effect preferences baked in.
+
+## Phase 4: Android App Packaging (Capacitor Setup)
+- [x] **Task 4.1: Capacitor Android Scaffolding & Native Project Generation**
+  - *Action:* Installed `@capacitor/core`, `@capacitor/cli`, `@capacitor/android`. Initialized Capacitor configuration (`capacitor.config.ts`) with app name "BandLab Studio" and package `com.qwenton.bandlabs`. Generated the native `android/` directory containing `build.gradle`, `app/src/main/AndroidManifest.xml`, and Gradle wrappers.
+  - *Target Files:* `capacitor.config.ts`, `android/build.gradle`, `android/app/build.gradle`, `android/app/src/main/AndroidManifest.xml`
+  - *Done When:* Native Android directory `android/` is scaffolded with gradle wrapper scripts (`gradlew`, `gradlew.bat`).
+- [x] **Task 4.2: Firebase Integration, Android Permissions & APK Compilation**
+  - *Action:* Placed `google-services.json` in `android/app/google-services.json`. Added audio permissions (`RECORD_AUDIO`, `MODIFY_AUDIO_SETTINGS`, `INTERNET`, `STORAGE`) to `AndroidManifest.xml`. Configured Java 17 compatibility in `android/app/build.gradle` and compiled the release/debug APK via `./gradlew.bat assembleDebug`.
+  - *Target Files:* `android/app/google-services.json`, `android/app/src/main/AndroidManifest.xml`, `android/app/build/outputs/apk/debug/app-debug.apk`
+  - *Done When:* Android debug APK `app-debug.apk` compiles with exit code 0 (`BUILD SUCCESSFUL`).
+
+## Phase 5: Security Audit & Production Readiness
+- [ ] **Task 5.1: Defensive Audit & Final Verification**
+  - *Action:* Audit Supabase RLS policies on `user_settings`, verify environment variables are protected, ensure client-side memory cleanup on audio nodes to prevent memory leaks during export, and generate `.agent/security_report.md`.
+  - *Target Files:* `.agent/security_report.md`, `supabase/user_settings.sql`
+  - *Done When:* All security checks pass, build compiles with zero errors, and application is verified ready for deployment on Vercel's free hobby tier and Android stores.
