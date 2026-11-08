@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 
 // Dynamically import StudioLayout with ssr: false so Web Audio API and window context work seamlessly
 const StudioLayout = dynamic(
@@ -24,5 +25,9 @@ const StudioLayout = dynamic(
 );
 
 export default function HomePage() {
-  return <StudioLayout />;
+  return (
+    <ErrorBoundary>
+      <StudioLayout />
+    </ErrorBoundary>
+  );
 }

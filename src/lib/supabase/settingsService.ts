@@ -3,6 +3,27 @@ import { UserSettings, DEFAULT_USER_SETTINGS } from "@/types/settings";
 
 const LOCAL_STORAGE_KEY = "bandlab_user_settings";
 
+function safeGet(key: string): string | null {
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return window.localStorage.getItem(key);
+    }
+  } catch {
+    // Ignore storage restriction
+  }
+  return null;
+}
+
+function safeSet(key: string, value: string): void {
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      window.localStorage.setItem(key, value);
+    }
+  } catch {
+    // Ignore storage restriction
+  }
+}
+
 export async function getUserSettings(userId: string): Promise<UserSettings> {
   // Try to load from Supabase
   try {
@@ -20,14 +41,12 @@ export async function getUserSettings(userId: string): Promise<UserSettings> {
   }
 
   // Fallback to localStorage or default
-  if (typeof window !== "undefined") {
-    const saved = localStorage.getItem(`${LOCAL_STORAGE_KEY}_${userId}`);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        // ignore parse error
-      }
+  const saved = safeGet(`${LOCAL_STORAGE_KEY}_${userId}`);
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch {
+      // ignore parse error
     }
   }
 
@@ -40,9 +59,7 @@ export async function getUserSettings(userId: string): Promise<UserSettings> {
 
 export async function saveUserSettings(settings: UserSettings): Promise<boolean> {
   // Save locally first for instant snappy response
-  if (typeof window !== "undefined") {
-    localStorage.setItem(`${LOCAL_STORAGE_KEY}_${settings.id}`, JSON.stringify(settings));
-  }
+  safeSet(`${LOCAL_STORAGE_KEY}_${settings.id}`, JSON.stringify(settings));
 
   try {
     const payload = {

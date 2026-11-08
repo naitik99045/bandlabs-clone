@@ -8,7 +8,7 @@
   - *Target Files:* `package.json`, `tsconfig.json`, `next.config.ts`, `.env.example`, `.env.local`
   - *Done When:* `npm run build` succeeds and dev server starts with zero errors.
 - [x] **Task 1.2: BandLab Studio Shell Layout & Dark Audio Tokens**
-  - *Action:* Built the BandLab dark studio layout shell: Top Transport Bar (Play/Pause/Record, BPM, Key, Time display, Master Volume, "Download Music" button), Left Track Header List, Central Timeline Arrangement View, and Bottom Vocal Setup & Beat Maker Dock.
+  - *Action:* Built the BandLab dark studio layout shell: Top Transport Bar, Left Track Header List, Central Timeline Arrangement View, and Bottom Vocal Setup & Beat Maker Dock.
   - *Target Files:* `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/daw/TransportBar.tsx`, `src/components/daw/StudioLayout.tsx`, `src/styles/globals.css`
   - *Done When:* Studio UI renders with high responsiveness, smooth transport bar, time ruler, and authentic BandLab dark DAW styling.
 
@@ -18,9 +18,9 @@
   - *Target Files:* `src/types/settings.ts`, `src/lib/supabase/client.ts`, `src/lib/supabase/settingsService.ts`, `supabase/user_settings.sql`
   - *Done When:* User settings can be fetched, updated, and persisted to Supabase with TypeScript safety.
 - [x] **Task 2.2: Firebase Auth Integration & User Profile Sync**
-  - *Action:* Initialized Firebase Client SDK with project `bandlabs-clone` and API key. Implemented `AuthContext` supporting Google OAuth, Email/Password, and 1-click Instant Guest login so users can produce immediately without barriers. Auto-provision default user settings in Supabase on login.
+  - *Action:* Initialized Firebase Client SDK with project `bandlabs-clone` and API key. Implemented `AuthContext` supporting Google OAuth and 1-click Instant Guest login. Auto-provision default user settings in Supabase on login.
   - *Target Files:* `src/lib/firebase/config.ts`, `src/context/AuthContext.tsx`, `src/components/settings/UserSettingsModal.tsx`
-  - *Done When:* User can authenticate seamlessly via Google, Email, or Guest; user UID links automatically to Supabase `user_settings`.
+  - *Done When:* User can authenticate seamlessly via Google or Guest; user UID links automatically to Supabase `user_settings`.
 
 ## Phase 3: Core Feature Modules (Iterative Build)
 - [x] **Task 3.1: Web Audio Engine Core & Studio State Store**
@@ -48,18 +48,18 @@
   - *Target Files:* `src/lib/audio/MixdownExporter.ts`, `src/lib/audio/WavEncoder.ts`, `src/components/daw/TransportBar.tsx`
   - *Done When:* User can click "Download Music" and instantly receive the fully rendered audio file containing all their vocal additions, beat customizations, and effect preferences baked in.
 
-## Phase 4: Android App Packaging (Capacitor Setup)
-- [x] **Task 4.1: Capacitor Android Scaffolding & Native Project Generation**
-  - *Action:* Installed `@capacitor/core`, `@capacitor/cli`, `@capacitor/android`. Initialized Capacitor configuration (`capacitor.config.ts`) with app name "BandLab Studio" and package `com.qwenton.bandlabs`. Generated the native `android/` directory containing `build.gradle`, `app/src/main/AndroidManifest.xml`, and Gradle wrappers.
-  - *Target Files:* `capacitor.config.ts`, `android/build.gradle`, `android/app/build.gradle`, `android/app/src/main/AndroidManifest.xml`
-  - *Done When:* Native Android directory `android/` is scaffolded with gradle wrapper scripts (`gradlew`, `gradlew.bat`).
-- [x] **Task 4.2: Firebase Integration, Android Permissions & APK Compilation**
-  - *Action:* Placed `google-services.json` in `android/app/google-services.json`. Added audio permissions (`RECORD_AUDIO`, `MODIFY_AUDIO_SETTINGS`, `INTERNET`, `STORAGE`) to `AndroidManifest.xml`. Configured Java 17 compatibility in `android/app/build.gradle` and compiled the release/debug APK via `./gradlew.bat assembleDebug`.
-  - *Target Files:* `android/app/google-services.json`, `android/app/src/main/AndroidManifest.xml`, `android/app/build/outputs/apk/debug/app-debug.apk`
-  - *Done When:* Android debug APK `app-debug.apk` compiles with exit code 0 (`BUILD SUCCESSFUL`).
+## Phase 4: UI Polish, Error Recovery & Android Stability
+- [x] **Task 4.1: `qwenton-ui` Redesign & Zero AI Slop Implementation**
+  - *Action:* Converted all DAW styling to solid 60-30-10 OKLCH tokens (`globals.css`, `tailwind.config.ts`), removed all gradients, eliminated neon glows, applied monospace numbers, added track skeleton loaders, and included Terms of Service / Privacy Policy links.
+  - *Target Files:* `src/styles/globals.css`, `tailwind.config.ts`, `src/components/daw/TrackLane.tsx`, `src/components/daw/TimelineView.tsx`, `src/components/daw/VocalSuiteModal.tsx`, `src/components/daw/BeatMakerModal.tsx`, `src/components/settings/UserSettingsModal.tsx`
+  - *Done When:* DAW has authentic studio hardware aesthetics with strictly zero gradients and 11 passing automated tests.
+- [x] **Task 4.2: Android Client-Side Exception Fix & Studio Recovery Guard**
+  - *Action:* Fixed `auth/invalid-api-key` crash on Android WebView startup by making Firebase initialization crash-proof with fallback to offline guest session. Added top-level React `ErrorBoundary` and protected `localStorage` calls with safe storage wrappers.
+  - *Target Files:* `src/lib/firebase/config.ts`, `src/lib/supabase/client.ts`, `src/lib/supabase/settingsService.ts`, `src/context/AuthContext.tsx`, `src/components/common/ErrorBoundary.tsx`, `src/app/page.tsx`
+  - *Done When:* APK launches into DAW workspace on Android devices without throwing client-side exception or showing black error screen.
 
-## Phase 5: Security Audit & Production Readiness
-- [ ] **Task 5.1: Defensive Audit & Final Verification**
-  - *Action:* Audit Supabase RLS policies on `user_settings`, verify environment variables are protected, ensure client-side memory cleanup on audio nodes to prevent memory leaks during export, and generate `.agent/security_report.md`.
-  - *Target Files:* `.agent/security_report.md`, `supabase/user_settings.sql`
-  - *Done When:* All security checks pass, build compiles with zero errors, and application is verified ready for deployment on Vercel's free hobby tier and Android stores.
+## Phase 5: Cloud Compilation & Release
+- [ ] **Task 5.1: Push Fixes, Tag v1.0.2 & Publish Release**
+  - *Action:* Commit changes to git, tag as `v1.0.2`, push to GitHub, and verify GitHub Actions builds and publishes the new APK release.
+  - *Target Files:* `.github/workflows/build-and-release.yml`
+  - *Done When:* GitHub Release v1.0.2 is live with downloadable `app-debug.apk`.
