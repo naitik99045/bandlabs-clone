@@ -57,6 +57,10 @@
   - *Action:* Fixed `auth/invalid-api-key` crash on Android WebView startup by making Firebase initialization crash-proof with fallback to offline guest session. Added top-level React `ErrorBoundary` and protected `localStorage` calls with safe storage wrappers.
   - *Target Files:* `src/lib/firebase/config.ts`, `src/lib/supabase/client.ts`, `src/lib/supabase/settingsService.ts`, `src/context/AuthContext.tsx`, `src/components/common/ErrorBoundary.tsx`, `src/app/page.tsx`
   - *Done When:* APK launches into DAW workspace on Android devices without throwing client-side exception or showing black error screen.
+- [x] **Task 4.3: BandLab 1-to-1 Multi-Screen Mobile Flow & Studio Verification**
+  - *Action:* Built authentic 4-screen BandLab mobile architecture: (1) Landing View with hero & direct access; (2) Authentication Modal with Email/Password + Google + Guest; (3) Dashboard creation hub with "+ Create New Project", Quick Launch tools, starter templates (Trap, Pop, Drill), project library, and bottom navigation with central red "+" button; (4) Mobile-first Studio with vertical track cards (`TracksMobileView`), touch faders, pan, rec arm, waveform clips, and Timeline view switcher.
+  - *Target Files:* `src/stores/useStudioStore.ts`, `src/components/landing/LandingView.tsx`, `src/components/auth/AuthModal.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/daw/TracksMobileView.tsx`, `src/components/daw/StudioLayout.tsx`, `src/components/daw/TransportBar.tsx`, `src/app/page.tsx`
+  - *Done When:* Complete end-to-end user navigation flow is verified on mobile emulation, all 11 automated unit/DSP tests pass, Next.js static build succeeds with zero errors, and native APK is compiled locally and published to GitHub Releases (v1.0.3).
 
 ## Phase 5: Cloud Compilation & Release
 - [ ] **Task 5.1: Push Fixes, Tag v1.0.2 & Publish Release**
