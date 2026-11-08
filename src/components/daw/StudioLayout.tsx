@@ -61,7 +61,7 @@ function StudioCore() {
       <TransportBar />
 
       {/* Center Multitrack Timeline & Mobile Tracks View */}
-      <main className="flex-1 overflow-hidden flex flex-col">
+      <main className="flex-1 overflow-hidden flex flex-col pb-14 sm:pb-0">
         <div className="flex-1 flex overflow-hidden">
           <div className={`flex-1 flex flex-col ${mobileActiveTab === "tracks" ? "flex" : "hidden"} sm:hidden`}>
             <TracksMobileView />
@@ -72,8 +72,8 @@ function StudioCore() {
         </div>
       </main>
 
-      {/* Bottom Professional DAW Engine Status Bar */}
-      <footer className="h-6 bg-surface-1 border-t border-surface-border px-3 flex items-center justify-between text-[10px] font-mono text-slateMuted shrink-0">
+      {/* Bottom Professional DAW Engine Status Bar (Desktop Only) */}
+      <footer className="hidden sm:flex h-6 bg-surface-1 border-t border-surface-border px-3 items-center justify-between text-[10px] font-mono text-slateMuted shrink-0">
         <div className="flex items-center gap-2 sm:gap-3 truncate">
           <div className="flex items-center gap-1.5 text-steel truncate">
             <Cpu className="w-3 h-3 text-brand shrink-0" />

@@ -80,30 +80,30 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
         with:
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.3' }}
-          name: BandLab Studio Pro ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.3' }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.4' }}
+          name: BandLab Studio Pro ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.4' }}
           draft: false
           prerelease: false
           body: |
-            ## 🎛️ BandLab Studio Pro v1.0.3 Mobile Release
+            ## 🎛️ BandLab Studio Pro v1.0.4 Native Android Mobile Experience
 
-            Reverse-engineered 1-to-1 BandLab mobile app UX flow, high-precision multi-track DAW, and native Android studio built with zero AI slop, strictly adhering to clean solid 60-30-10 OKLCH design principles.
+            100% Android-optimized touch UX, native mobile bottom transport dock, and card-driven studio controls built with zero AI slop, strictly adhering to clean solid 60-30-10 OKLCH design principles.
 
-            ### 🚀 New in v1.0.3:
-            - **Multi-Screen UX Flow:**
-              1. **Landing View:** High-converting discovery page with feature highlights, direct sign-in, and instant studio entry.
-              2. **Authentication System:** Complete Sign In / Sign Up modal supporting Email & Password authentication, Google OAuth, and Instant Guest fallback with zero friction.
-              3. **Mobile Creation Hub (Dashboard):** Authentic BandLab mobile dashboard with "+ Create New Project" hero card, Quick Launch tool triggers, My Projects library, starter templates (Trap, Pop, Drill), and fixed bottom navigation with the iconic centered red "+" button.
-              4. **Creation Bottom Sheet:** Instant selection between Voice/Mic with AutoPitch pre-armed, 16-Step Beat Maker, Audio Import, and Multi-track Studio.
-            - **Mobile-First Studio Ergonomics:**
-              - **Dedicated Mobile Tracks View:** Large touch cards for volume fader, pan fader, REC arm, Mute, Solo, audio clip waveform summaries, and inline audio file import.
-              - **Responsive View Switcher:** Header toggle between Tracks card view and Horizontal Multitrack Timeline.
-              - **Navigation Back to Projects:** 1-tap `< Projects` return button to dashboard with inline project title renaming.
-            - **Audio DSP & Modulations:**
-              - Real-time AutoPitch vocal tuning suite with Doppler pitch shifter.
-              - 16-Step Beat Maker drum machine with 8 synthesized voices.
-              - Live microphone recording with VU level metering.
-              - Client-side master mixdown export to 320kbps MP3 and 24-bit studio WAV.
+            ### 🚀 New in v1.0.4:
+            - **Native Mobile Bottom Transport Dock:**
+              - Relocated Play & Record to the bottom of the screen right under thumb reach.
+              - Large circular Red Record button with live pulsing recording indicator.
+              - Large circular Play/Pause button and Rewind-to-start action.
+              - Dedicated Metronome button, 1-tap BPM indicator, and timecode readout (`00:00.0`).
+              - 1-tap view switcher between Mobile Track Cards and Arrangement Timeline.
+            - **Mobile Track Card Direct FX Triggers:**
+              - Added direct **AutoPitch FX** shortcut button directly on Vocal track cards.
+              - Added direct **16-Step 808 Sequencer** button directly on Drum track cards.
+              - Touch-friendly faders with enhanced swipe target zones for Volume and Pan.
+            - **Native Android App Bar & Clean Navigation:**
+              - Streamlined mobile top app bar with `< Projects` return, tap-to-rename title, quick drawer icons, and 1-tap Mixdown export.
+              - Hidden desktop status bar footer on mobile viewports for clean, unhindered screen real estate.
+              - Android safe area inset padding and disabled tap delays (`touch-action: manipulation`).
             - **100% Automated Test Suite:** Verified across all unit and DSP suites.
 
             ### 📱 Download Android APK

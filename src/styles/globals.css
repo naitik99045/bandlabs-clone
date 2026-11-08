@@ -35,6 +35,9 @@ body {
   letter-spacing: -0.02em;
   user-select: none;
   overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 /* Monospace Metrics, Timecodes & Faders */
