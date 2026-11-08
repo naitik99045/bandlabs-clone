@@ -4,13 +4,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { 
   Play, 
   Pause, 
-  Circle, 
   Square, 
   Mic, 
   Download, 
   Settings, 
   Grid,
-  LogIn
+  LogIn,
+  SlidersHorizontal,
+  Circle
 } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { audioEngine } from "@/lib/audio/AudioEngine";
@@ -44,7 +45,6 @@ export function TransportBar() {
   const [exportProgress, setExportProgress] = useState(0);
   const [liveMicLevel, setLiveMicLevel] = useState(0);
 
-  // Playhead timer synchronization
   const playStartTimeRef = useRef<number>(0);
   const startOffsetRef = useRef<number>(0);
 
@@ -80,7 +80,6 @@ export function TransportBar() {
     };
   }, [isPlaying, isRecording]);
 
-  // Metronome click loop
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isPlaying && isMetronomeOn) {
@@ -126,7 +125,7 @@ export function TransportBar() {
         setIsPlaying(true);
         setIsRecording(true);
       } else {
-        alert("Please grant microphone permissions in your browser to record vocals.");
+        alert("Microphone permission required to capture vocal takes.");
       }
     }
   };
@@ -139,7 +138,6 @@ export function TransportBar() {
     setCurrentTime(0);
   };
 
-  // One-click Download / Install Music handler
   const handleDownloadMusic = async () => {
     try {
       setIsExporting(true);
@@ -158,7 +156,7 @@ export function TransportBar() {
       downloadFile(blob, filename);
     } catch (err) {
       console.error("Export error:", err);
-      alert("Failed to render music mixdown. Please check console.");
+      alert("Mixdown rendering failed. Check console for details.");
     } finally {
       setIsExporting(false);
       setExportProgress(0);
@@ -173,162 +171,174 @@ export function TransportBar() {
   };
 
   return (
-    <header className="h-14 border-b border-studio-800 bg-studio-900 px-4 flex items-center justify-between select-none">
-      {/* Brand / Logo */}
+    <header className="h-14 border-b border-surface-border bg-surface-1 px-4 flex items-center justify-between select-none">
+      {/* Brand & Studio Architecture Identifier */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5 font-black text-xl tracking-wider text-white">
-          <span className="h-4 w-4 rounded-full bg-studio-accent animate-pulse" />
-          BAND<span className="text-studio-accent">LAB</span>
+        <div className="flex items-center gap-2 font-semibold text-sm tracking-tight text-chalk">
+          <span className="w-2.5 h-2.5 bg-brand shrink-0" />
+          <span className="font-bold">BANDLAB</span>
+          <span className="text-[11px] font-mono px-1.5 py-0.5 bg-surface-2 border border-surface-border text-steel">
+            STUDIO PRO
+          </span>
         </div>
-        <span className="text-xs px-2 py-0.5 rounded bg-studio-800 text-zinc-400 font-mono">
-          STUDIO CLOUD
-        </span>
       </div>
 
-      {/* Center DAW Transport Controls */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1 bg-studio-950 p-1 rounded-lg border border-studio-800">
+      {/* Center Primary Transport Controls */}
+      <div className="flex items-center gap-2.5">
+        {/* Playback Button Group */}
+        <div className="flex items-center bg-surface-0 border border-surface-border p-0.5">
           <button
             onClick={handleStop}
-            className="p-2 rounded hover:bg-studio-800 text-zinc-400 hover:text-white transition"
-            title="Stop & Reset"
+            className="p-1.5 hover:bg-surface-2 text-steel hover:text-chalk transition"
+            title="Stop & Reset (0.0s)"
           >
-            <Square className="w-4 h-4" />
+            <Square className="w-3.5 h-3.5 fill-current" />
           </button>
 
           <button
             onClick={handlePlayToggle}
-            className={`p-2 rounded transition flex items-center justify-center ${
+            className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition ${
               isPlaying
-                ? "bg-studio-green text-zinc-950 hover:bg-emerald-400"
-                : "hover:bg-studio-800 text-zinc-200"
+                ? "bg-audio-play text-surface-0 font-bold"
+                : "hover:bg-surface-2 text-chalk"
             }`}
             title="Play / Pause (Space)"
           >
-            {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+            {isPlaying ? (
+              <>
+                <Pause className="w-3.5 h-3.5 fill-current" />
+                <span>PAUSE</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>PLAY</span>
+              </>
+            )}
           </button>
 
           <button
             onClick={handleRecordToggle}
-            className={`p-2 rounded transition flex items-center justify-center relative ${
+            className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition relative ${
               isRecording
-                ? "bg-studio-accent text-white animate-pulse"
-                : "hover:bg-studio-800 text-studio-accent"
+                ? "bg-audio-rec text-white font-bold"
+                : "hover:bg-surface-2 text-audio-rec"
             }`}
-            title="Record Vocal from Microphone"
+            title="Record Vocal Take"
           >
-            <Circle className="w-4 h-4 fill-current" />
+            <Circle className={`w-3.5 h-3.5 fill-current ${isRecording ? "animate-pulse" : ""}`} />
+            <span>REC</span>
             {isRecording && (
               <span
-                style={{ height: `${Math.max(4, liveMicLevel * 20)}px` }}
-                className="absolute -right-1 bottom-0 w-1 bg-studio-cyan rounded-full transition-all"
+                style={{ height: `${Math.max(4, liveMicLevel * 18)}px` }}
+                className="w-1 bg-audio-cyan ml-0.5"
               />
             )}
           </button>
         </div>
 
-        {/* Time / Bars display */}
-        <div className="bg-studio-950 px-3 py-1.5 rounded-lg border border-studio-800 font-mono text-sm tracking-wider text-studio-cyan">
+        {/* Monospace Timecode */}
+        <div className="bg-surface-0 border border-surface-border px-3 py-1.5 font-mono-numbers text-xs text-audio-cyan tracking-wider">
           {formatTime(currentTime)}
         </div>
 
-        {/* BPM Selector */}
-        <div className="flex items-center gap-1.5 bg-studio-950 px-2.5 py-1.5 rounded-lg border border-studio-800 text-xs">
-          <span className="text-zinc-500 font-bold">BPM</span>
+        {/* BPM & Clock */}
+        <div className="flex items-center gap-1 bg-surface-0 border border-surface-border px-2.5 py-1 text-xs">
+          <span className="text-slateMuted font-mono text-[10px]">BPM</span>
           <input
             type="number"
-            min={50}
-            max={220}
+            min={40}
+            max={240}
             value={bpm}
             onChange={(e) => setBpm(Number(e.target.value))}
-            className="w-12 bg-transparent text-zinc-200 font-mono text-right focus:outline-none"
+            className="w-11 bg-transparent text-chalk font-mono text-right focus:outline-none"
           />
         </div>
 
-        {/* Key Signature */}
-        <div className="bg-studio-950 px-2.5 py-1.5 rounded-lg border border-studio-800 text-xs flex items-center gap-1">
-          <span className="text-zinc-500 font-bold">KEY</span>
+        {/* Musical Key */}
+        <div className="flex items-center gap-1 bg-surface-0 border border-surface-border px-2.5 py-1 text-xs">
+          <span className="text-slateMuted font-mono text-[10px]">KEY</span>
           <select
             value={key}
             onChange={(e) => setKey(e.target.value)}
-            className="bg-transparent text-zinc-200 focus:outline-none cursor-pointer"
+            className="bg-transparent text-chalk focus:outline-none cursor-pointer text-xs"
           >
-            <option value="C Major" className="bg-studio-900">C Maj</option>
-            <option value="A Minor" className="bg-studio-900">A Min</option>
-            <option value="G Major" className="bg-studio-900">G Maj</option>
-            <option value="E Minor" className="bg-studio-900">E Min</option>
-            <option value="F Major" className="bg-studio-900">F Maj</option>
-            <option value="D Minor" className="bg-studio-900">D Min</option>
+            <option value="C Major" className="bg-surface-1">C Maj</option>
+            <option value="A Minor" className="bg-surface-1">A Min</option>
+            <option value="G Major" className="bg-surface-1">G Maj</option>
+            <option value="E Minor" className="bg-surface-1">E Min</option>
+            <option value="F Major" className="bg-surface-1">F Maj</option>
+            <option value="D Minor" className="bg-surface-1">D Min</option>
           </select>
         </div>
 
-        {/* Metronome Toggle */}
+        {/* Metronome Click Toggle */}
         <button
           onClick={toggleMetronome}
-          className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+          className={`px-2.5 py-1.5 text-[11px] font-mono border transition ${
             isMetronomeOn
-              ? "bg-studio-800 text-studio-cyan border-studio-600"
-              : "bg-studio-950 text-zinc-500 border-studio-800 hover:text-zinc-300"
+              ? "bg-surface-2 text-audio-cyan border-surface-strong"
+              : "bg-surface-0 text-slateMuted border-surface-border hover:text-steel"
           }`}
           title="Toggle Metronome"
         >
-          CLICK
+          METRO
         </button>
       </div>
 
-      {/* Right Action Tools & Install / Download Music */}
-      <div className="flex items-center gap-2.5">
-        {/* Vocal Setup / AutoPitch Drawer Button */}
+      {/* Right Drawer Tools & 10% Accent Primary CTA */}
+      <div className="flex items-center gap-2">
+        {/* Vocal Suite Trigger */}
         <button
           onClick={() => setActiveModal("vocal")}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-studio-850 hover:bg-studio-800 text-studio-accent border border-studio-800 hover:border-studio-accent/40 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
         >
-          <Mic className="w-3.5 h-3.5" />
-          <span>Vocal Setup</span>
+          <Mic className="w-3.5 h-3.5 text-brand" />
+          <span>Vocal Suite</span>
         </button>
 
-        {/* Beat Maker Drawer Button */}
+        {/* Beat Maker Trigger */}
         <button
           onClick={() => setActiveModal("beatmaker")}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-studio-850 hover:bg-studio-800 text-studio-purple border border-studio-800 hover:border-studio-purple/40 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
         >
-          <Grid className="w-3.5 h-3.5" />
+          <Grid className="w-3.5 h-3.5 text-audio-amber" />
           <span>Beat Maker</span>
         </button>
 
-        {/* PRIMARY ACTION: Download / Install Music */}
+        {/* 10% ACCENT: Solid Export CTA */}
         <button
           onClick={handleDownloadMusic}
           disabled={isExporting}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-studio-accent hover:bg-studio-accentHover text-white shadow-lg shadow-studio-accent/20 transition disabled:opacity-50"
-          title="Render & Download your song with all vocal & beat additions"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-brand hover:bg-brand-hover active:bg-brand-active text-white border border-brand transition disabled:opacity-50"
+          title="Render and Download Multi-Track Master (MP3 / WAV)"
         >
-          <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-bounce" : ""}`} />
-          <span>{isExporting ? `Rendering ${exportProgress}%` : "Download Music"}</span>
+          <Download className="w-3.5 h-3.5" />
+          <span>{isExporting ? `Bouncing ${exportProgress}%` : "Export Master"}</span>
         </button>
 
-        {/* Settings */}
+        {/* User Preferences */}
         <button
           onClick={() => setActiveModal("settings")}
-          className="p-1.5 rounded-lg hover:bg-studio-800 text-zinc-400 hover:text-white transition"
-          title="User Preferences & Supabase Sync"
+          className="p-1.5 bg-surface-0 hover:bg-surface-2 border border-surface-border text-steel hover:text-chalk transition"
+          title="Studio Preferences"
         >
-          <Settings className="w-4 h-4" />
+          <Settings className="w-3.5 h-3.5" />
         </button>
 
-        {/* Auth / Profile */}
+        {/* Identity & Session */}
         {user ? (
-          <div className="flex items-center gap-1.5 pl-2 border-l border-studio-800 text-xs text-zinc-300">
-            <div className="w-6 h-6 rounded-full bg-studio-accent/30 flex items-center justify-center text-[10px] font-bold text-studio-accent">
-              {user.displayName?.[0] || user.email?.[0] || "U"}
-            </div>
+          <div className="pl-1 text-xs">
+            <span className="px-2 py-1 bg-surface-2 border border-surface-border text-steel font-mono text-[11px]">
+              {user.displayName || user.email?.split("@")[0] || "PRODUCER"}
+            </span>
           </div>
         ) : (
           <button
             onClick={loginWithGoogle}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-studio-800 hover:bg-studio-700 text-zinc-300 text-xs font-medium transition"
+            className="flex items-center gap-1 px-2.5 py-1.5 bg-surface-0 hover:bg-surface-2 border border-surface-border text-steel text-xs font-medium transition"
           >
-            <LogIn className="w-3.5 h-3.5" />
+            <LogIn className="w-3 h-3" />
             <span>Sign In</span>
           </button>
         )}

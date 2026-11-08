@@ -16,25 +16,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Install Node dependencies
-        run: npm install
+      - name: Install dependencies
+        run: npm ci || npm install
 
-      - name: Build Next.js Web Studio
-        run: npm run build
+      - name: Run automated DAW and DSP test suite
+        run: npm test
 
-      - name: Sync Capacitor Android
-        run: npx cap sync android
-
-      - name: Set up Java 17
+      - name: Set up Java 17 Temurin
         uses: actions/setup-java@v4
         with:
           java-version: '17'
@@ -44,7 +41,20 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Compile Android APK on GitHub
+      - name: Prepare Android Google Services configuration
+        run: |
+          if [ ! -f android/app/google-services.json ]; then
+            echo "Copying google-services.json template for CI build"
+            cp android/app/google-services.json.example android/app/google-services.json
+          fi
+
+      - name: Build Next.js Web Studio (Static Export)
+        run: npm run build
+
+      - name: Sync Capacitor Android Project
+        run: npx cap sync android
+
+      - name: Compile Android APK via Gradle
         run: |
           cd android
           ./gradlew assembleDebug --stacktrace
@@ -59,20 +69,23 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
         with:
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
-          name: BandLab Studio ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.1' }}
+          name: BandLab Studio Pro ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.1' }}
           draft: false
           prerelease: false
           body: |
-            ## 🎛️ BandLab Studio v1.0.0 Release
+            ## 🎛️ BandLab Studio Pro v1.0.1 Release
 
-            ### 🚀 Features Included:
+            High-precision multi-track digital audio workstation (DAW) and mobile Android studio built with zero AI slop, strictly adhering to clean solid 60-30-10 OKLCH design principles.
+
+            ### 🚀 Production Features:
             - **Web Studio & Android APK:** Multi-track DAW with track lanes, volume, pan, mute, and solo.
-            - **Real-Time AutoPitch & Vocal Suite:** Granular pitch shifter (`PitchShifterNode`), LFO Chorus/Vibrato, Tube Saturation, 4-Band Parametric EQ, Compressor, Space Reverb, and Delay.
+            - **Real-Time AutoPitch & Vocal Suite:** Granular Doppler pitch shifter (`PitchShifterNode`), LFO Chorus/Vibrato, Tube Saturation, 4-Band Parametric EQ, Compressor, Space Reverb, and Tempo Delay.
             - **Live Microphone Recording:** Real-time microphone input capture with live VU level meter and automatic clip placement on track lanes.
-            - **16-Step Beat Maker:** 8 synthesized drum channels (808 Bass, Kick, Snare, Clap, Hats, Perc, Crash) with real-time pattern preview.
-            - **1-Click Music Installation:** Client-side `OfflineAudioContext` instant export to 320kbps MP3 or 24-bit studio WAV directly onto your device ($0 server cost).
-            - **Cloud User Settings & Firebase Auth:** Supabase `user_settings` sync and Firebase multi-provider auth with guest mode.
+            - **16-Step Beat Maker:** 8 synthesized drum channels (808 Bass, Kick, Snare, Clap, Hats, Perc, Crash) with real-time pattern preview and 16th-note timing.
+            - **1-Click Music Installation & Export:** Client-side `OfflineAudioContext` instant export to 320kbps MP3 or 24-bit studio WAV directly onto your device ($0 server cost).
+            - **Cloud User Settings & Firebase Auth:** Supabase `user_settings` sync and Firebase multi-provider auth with guest mode and full legal terms of service.
+            - **100% Automated Test Suite:** Verified across 11 test suites (entropy, schema, waveform peaks, Doppler math, chromatic offsets, hard-tune, drum voices, 16th-note timing, WAV RIFF headers, Int16 sample clamping).
 
             ### 📱 Download Android APK
             Download **`app-debug.apk`** below to install directly on your Android phone!

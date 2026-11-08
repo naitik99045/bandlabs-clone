@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Plus, Mic, Music, Grid } from "lucide-react";
+import { Mic, Music, Plus } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { TrackLane } from "./TrackLane";
 
@@ -26,23 +26,24 @@ export function TimelineView() {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-studio-950 overflow-hidden select-none">
+    <div className="flex-1 flex flex-col h-full bg-surface-0 overflow-hidden select-none">
       {/* Time Ruler */}
       <div
         onClick={handleRulerClick}
-        className="h-7 border-b border-studio-800 bg-studio-900 flex shrink-0 cursor-pointer relative"
+        className="h-7 border-b border-surface-border bg-surface-1 flex shrink-0 cursor-pointer relative"
       >
-        <div className="w-64 border-r border-studio-800 px-3 flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider shrink-0 bg-studio-900">
+        <div className="w-64 border-r border-surface-border px-3 flex items-center justify-between text-[11px] font-mono text-steel uppercase tracking-wider shrink-0 bg-surface-1">
           <span>Tracks ({tracks.length})</span>
+          <span className="text-[10px] text-slateMuted">1 px = 50ms</span>
         </div>
 
         {/* Ruler Ticks */}
-        <div className="flex-1 relative overflow-hidden flex items-center font-mono text-[10px] text-zinc-500">
-          {Array.from({ length: 40 }).map((_, i) => (
+        <div className="flex-1 relative overflow-hidden flex items-center font-mono-numbers text-[10px] text-slateMuted">
+          {Array.from({ length: 48 }).map((_, i) => (
             <div
               key={i}
               style={{ left: `${i * 5 * pxPerSecond}px` }}
-              className="absolute h-full flex items-center pl-1 border-l border-studio-800"
+              className="absolute h-full flex items-center pl-1.5 border-l border-surface-border"
             >
               <span>{i * 5}s</span>
             </div>
@@ -55,37 +56,52 @@ export function TimelineView() {
         ref={timelineContainerRef}
         className="flex-1 overflow-y-auto overflow-x-auto relative"
       >
-        {/* Synchronized Vertical Playhead Line */}
+        {/* Synchronized Vertical Playhead Line (Solid Brand Color - Strictly No Glows) */}
         <div
           style={{
             left: `${256 + currentTime * pxPerSecond}px`,
           }}
-          className="absolute top-0 bottom-0 w-[2px] bg-studio-accent z-30 pointer-events-none shadow-[0_0_8px_rgba(255,59,48,0.8)]"
+          className="absolute top-0 bottom-0 w-[2px] bg-brand z-30 pointer-events-none"
         >
-          <div className="w-2.5 h-2.5 -ml-1 bg-studio-accent rounded-full" />
+          <div className="w-2 h-2 -ml-[3px] bg-brand" />
         </div>
 
         {/* Track Lanes */}
-        {tracks.map((track) => (
-          <TrackLane key={track.id} track={track} />
-        ))}
+        {tracks.length > 0 ? (
+          tracks.map((track) => (
+            <TrackLane key={track.id} track={track} />
+          ))
+        ) : (
+          /* Skeleton Loading / Empty Studio State */
+          <div className="p-8 flex flex-col items-center justify-center gap-3 text-center border-b border-surface-border">
+            <div className="w-12 h-12 rounded-sm bg-surface-1 border border-surface-border flex items-center justify-center text-slateMuted">
+              <Plus className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-chalk">No Tracks In Session</h3>
+              <p className="text-xs text-slateMuted max-w-sm">
+                Add your first vocal or beat track below, or record live with your microphone.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Add Track Action Bar */}
-        <div className="p-4 flex items-center gap-2">
+        <div className="p-4 flex items-center gap-2.5">
           <button
             onClick={() => addTrack("vocal")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-studio-900 hover:bg-studio-800 text-studio-accent border border-studio-800 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-mono font-medium bg-surface-1 hover:bg-surface-2 text-chalk border border-surface-border transition"
           >
-            <Mic className="w-3.5 h-3.5" />
-            <span>Add Vocal Track</span>
+            <Mic className="w-3.5 h-3.5 text-brand" />
+            <span>+ Add Vocal Track</span>
           </button>
 
           <button
             onClick={() => addTrack("beat")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-studio-900 hover:bg-studio-800 text-studio-cyan border border-studio-800 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-mono font-medium bg-surface-1 hover:bg-surface-2 text-chalk border border-surface-border transition"
           >
-            <Music className="w-3.5 h-3.5" />
-            <span>Add Backing Beat Track</span>
+            <Music className="w-3.5 h-3.5 text-audio-cyan" />
+            <span>+ Add Backing Beat Track</span>
           </button>
         </div>
       </div>

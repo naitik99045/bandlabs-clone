@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Settings, Cloud, Check, LogOut, User, Key } from "lucide-react";
+import { X, Settings, Cloud, Check, LogOut, User, Shield, FileText } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { useAuth } from "@/context/AuthContext";
 
@@ -9,6 +9,7 @@ export function UserSettingsModal() {
   const { activeModal, setActiveModal, bpm, key } = useStudioStore();
   const { user, guestId, settings, updateSettings, logout, loginWithGoogle } = useAuth();
 
+  const [activeTab, setActiveTab] = useState<"preferences" | "legal">("preferences");
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
@@ -44,159 +45,217 @@ export function UserSettingsModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-studio-900 border border-studio-800 rounded-xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 select-none">
+      <div className="bg-surface-1 border border-surface-border rounded-sm w-full max-w-xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b border-studio-800 flex items-center justify-between bg-studio-950">
+        <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-studio-800 text-zinc-300">
-              <Settings className="w-5 h-5" />
+            <div className="p-1.5 rounded-sm bg-surface-2 border border-surface-border text-brand">
+              <Settings className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Studio & User Preferences</h2>
-              <p className="text-xs text-zinc-400">
-                Synced automatically to your Supabase account
+              <h2 className="text-sm font-bold text-chalk uppercase tracking-wide">
+                Studio Preferences & Cloud Sync
+              </h2>
+              <p className="text-[11px] text-slateMuted">
+                Configured with Supabase session storage and Firebase authentication
               </p>
             </div>
           </div>
 
           <button
             onClick={() => setActiveModal(null)}
-            className="p-1.5 rounded-lg hover:bg-studio-800 text-zinc-400 hover:text-white transition"
+            className="p-1 rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Tab Switcher */}
+        <div className="flex border-b border-surface-border bg-surface-0 px-4 text-xs font-mono">
+          <button
+            onClick={() => setActiveTab("preferences")}
+            className={`py-2 px-3 border-b-2 font-semibold transition ${
+              activeTab === "preferences"
+                ? "border-brand text-brand"
+                : "border-transparent text-slateMuted hover:text-chalk"
+            }`}
+          >
+            General Settings
+          </button>
+          <button
+            onClick={() => setActiveTab("legal")}
+            className={`py-2 px-3 border-b-2 font-semibold transition flex items-center gap-1.5 ${
+              activeTab === "legal"
+                ? "border-brand text-brand"
+                : "border-transparent text-slateMuted hover:text-chalk"
+            }`}
+          >
+            <Shield className="w-3.5 h-3.5" />
+            <span>Terms of Service & Privacy</span>
           </button>
         </div>
 
         {/* Form Body */}
-        <div className="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
-          {/* Identity Card */}
-          <div className="bg-studio-950 p-4 rounded-xl border border-studio-800 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-studio-accent/20 flex items-center justify-center text-studio-accent font-bold">
-                <User className="w-5 h-5" />
+        {activeTab === "preferences" ? (
+          <div className="p-5 space-y-4 overflow-y-auto max-h-[65vh] bg-surface-0">
+            {/* Identity Card */}
+            <div className="bg-surface-1 p-3.5 rounded-sm border border-surface-border flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-sm bg-surface-2 border border-surface-border flex items-center justify-center text-brand font-bold">
+                  <User className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-semibold text-chalk block">
+                    {user ? user.displayName || user.email : "Anonymous Producer Session"}
+                  </span>
+                  <span className="text-[10px] font-mono text-slateMuted">
+                    UID: {user?.uid.slice(0, 16) || guestId?.slice(0, 16)}...
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-xs font-bold text-white block">
-                  {user ? user.displayName || user.email : "Guest Session"}
-                </span>
-                <span className="text-[11px] font-mono text-zinc-500">
-                  ID: {user?.uid.slice(0, 12) || guestId?.slice(0, 12)}...
-                </span>
-              </div>
+
+              {user ? (
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-surface-2 hover:bg-surface-strong text-steel text-[11px] font-mono border border-surface-border transition"
+                >
+                  <LogOut className="w-3 h-3" />
+                  <span>Sign Out</span>
+                </button>
+              ) : (
+                <button
+                  onClick={loginWithGoogle}
+                  className="px-3 py-1 rounded-sm bg-brand hover:bg-brand-hover text-surface-0 text-[11px] font-mono font-bold transition"
+                >
+                  Link Google Auth
+                </button>
+              )}
             </div>
 
-            {user ? (
-              <button
-                onClick={logout}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-studio-850 hover:bg-studio-800 text-zinc-300 text-xs font-medium border border-studio-800 transition"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Sign Out</span>
-              </button>
-            ) : (
-              <button
-                onClick={loginWithGoogle}
-                className="px-3 py-1.5 rounded-lg bg-studio-accent hover:bg-studio-accentHover text-white text-xs font-bold transition shadow-md shadow-studio-accent/20"
-              >
-                Link Google Account
-              </button>
-            )}
-          </div>
-
-          {/* Preferences Fields */}
-          <div className="space-y-4">
-            <div>
-              <label className="text-xs font-bold text-zinc-400 block mb-1">
-                Display Name
-              </label>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full bg-studio-950 border border-studio-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-zinc-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+            {/* Preferences Fields */}
+            <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-zinc-400 block mb-1">
-                  Default BPM
-                </label>
-                <input
-                  type="number"
-                  value={defaultBpm}
-                  onChange={(e) => setDefaultBpm(Number(e.target.value))}
-                  className="w-full bg-studio-950 border border-studio-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-zinc-500 font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-zinc-400 block mb-1">
-                  Default Key
+                <label className="text-[11px] font-mono text-steel block mb-1">
+                  PRODUCER / DISPLAY NAME
                 </label>
                 <input
                   type="text"
-                  value={defaultKey}
-                  onChange={(e) => setDefaultKey(e.target.value)}
-                  className="w-full bg-studio-950 border border-studio-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-zinc-500 font-mono"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  className="w-full bg-surface-1 border border-surface-border rounded-sm p-2 text-xs text-chalk font-mono focus:outline-none focus:border-surface-strong"
                 />
               </div>
-            </div>
 
-            {/* Export Format Preference */}
-            <div className="bg-studio-950 p-4 rounded-xl border border-studio-800 space-y-3">
-              <span className="text-xs font-bold text-zinc-300 block">
-                Preferred Music Download Format
-              </span>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <button
-                  type="button"
-                  onClick={() => setExportFormat("mp3")}
-                  className={`p-2.5 rounded-lg border text-center font-bold transition ${
-                    exportFormat === "mp3"
-                      ? "bg-studio-accent/20 border-studio-accent text-white"
-                      : "border-studio-800 text-zinc-400 hover:border-zinc-600"
-                  }`}
-                >
-                  MP3 (320 kbps)
-                </button>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[11px] font-mono text-steel block mb-1">
+                    DEFAULT BPM
+                  </label>
+                  <input
+                    type="number"
+                    value={defaultBpm}
+                    onChange={(e) => setDefaultBpm(Number(e.target.value))}
+                    className="w-full bg-surface-1 border border-surface-border rounded-sm p-2 text-xs text-chalk font-mono focus:outline-none focus:border-surface-strong"
+                  />
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setExportFormat("wav")}
-                  className={`p-2.5 rounded-lg border text-center font-bold transition ${
-                    exportFormat === "wav"
-                      ? "bg-studio-accent/20 border-studio-accent text-white"
-                      : "border-studio-800 text-zinc-400 hover:border-zinc-600"
-                  }`}
-                >
-                  WAV (Lossless 24-bit)
-                </button>
+                <div>
+                  <label className="text-[11px] font-mono text-steel block mb-1">
+                    DEFAULT ROOT KEY
+                  </label>
+                  <input
+                    type="text"
+                    value={defaultKey}
+                    onChange={(e) => setDefaultKey(e.target.value)}
+                    className="w-full bg-surface-1 border border-surface-border rounded-sm p-2 text-xs text-chalk font-mono focus:outline-none focus:border-surface-strong"
+                  />
+                </div>
+              </div>
+
+              {/* Export Format Preference */}
+              <div className="bg-surface-1 p-3.5 rounded-sm border border-surface-border space-y-2">
+                <span className="text-[11px] font-mono text-steel block uppercase">
+                  Default Music Export Format
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                  <button
+                    type="button"
+                    onClick={() => setExportFormat("mp3")}
+                    className={`p-2 rounded-sm border text-center transition ${
+                      exportFormat === "mp3"
+                        ? "bg-surface-2 border-brand text-brand font-bold"
+                        : "border-surface-border text-slateMuted hover:text-chalk"
+                    }`}
+                  >
+                    MP3 (320 kbps CBR)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExportFormat("wav")}
+                    className={`p-2 rounded-sm border text-center transition ${
+                      exportFormat === "wav"
+                        ? "bg-surface-2 border-brand text-brand font-bold"
+                        : "border-surface-border text-slateMuted hover:text-chalk"
+                    }`}
+                  >
+                    WAV (24-bit Lossless)
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          /* Terms of Service & Privacy Policy View (Required by qwenton-ui Phase 4) */
+          <div className="p-5 space-y-4 overflow-y-auto max-h-[65vh] bg-surface-0 text-xs text-steel leading-relaxed font-mono">
+            <div className="border border-surface-border p-3.5 rounded-sm bg-surface-1 space-y-2">
+              <div className="flex items-center gap-2 text-chalk font-bold text-xs uppercase">
+                <FileText className="w-4 h-4 text-brand" />
+                <span>Terms of Service (BandLab Clone DAW)</span>
+              </div>
+              <p className="text-[11px] text-slateMuted">
+                1. <b>Intellectual Property Ownership:</b> You retain 100% full ownership, commercial rights, and copyright over all musical stems, vocal recordings, beats, and master mixdowns produced within this workstation.
+              </p>
+              <p className="text-[11px] text-slateMuted">
+                2. <b>Local In-Browser Processing:</b> All audio pitch manipulation, auto-tune quantization, and rendering occur client-side via Web Audio API. No unencrypted audio files are transmitted without user consent.
+              </p>
+            </div>
+
+            <div className="border border-surface-border p-3.5 rounded-sm bg-surface-1 space-y-2">
+              <div className="flex items-center gap-2 text-chalk font-bold text-xs uppercase">
+                <Shield className="w-4 h-4 text-audio-cyan" />
+                <span>Privacy & Telemetry Policy</span>
+              </div>
+              <p className="text-[11px] text-slateMuted">
+                1. <b>Data Storage:</b> Cloud synchronization saves user preferences (BPM, scale, export format) securely in Supabase with row-level security.
+              </p>
+              <p className="text-[11px] text-slateMuted">
+                2. <b>Microphone Access:</b> Microphone permissions are requested solely for active track audio capture and are never recorded in background.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
-        <div className="p-4 border-t border-studio-800 bg-studio-950 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-            <Cloud className="w-4 h-4 text-studio-cyan" />
-            <span>Supabase Cloud Sync Ready</span>
+        <div className="p-3.5 border-t border-surface-border bg-surface-1 flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-[11px] font-mono text-slateMuted">
+            <Cloud className="w-3.5 h-3.5 text-audio-cyan" />
+            <span>Supabase Cloud Engine Ready</span>
           </div>
 
           <div className="flex items-center gap-2">
             {savedSuccess && (
-              <span className="text-xs text-studio-green flex items-center gap-1">
+              <span className="text-xs font-mono text-audio-play flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" /> Saved!
               </span>
             )}
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-5 py-2 rounded-lg bg-studio-accent hover:bg-studio-accentHover text-white text-xs font-bold transition disabled:opacity-50"
+              className="px-4 py-1.5 rounded-sm bg-brand hover:bg-brand-hover text-surface-0 text-xs font-mono font-bold transition disabled:opacity-50"
             >
-              {saving ? "Saving..." : "Save Preferences"}
+              {saving ? "Writing..." : "Save Preferences"}
             </button>
           </div>
         </div>

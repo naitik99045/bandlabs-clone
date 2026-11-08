@@ -10,21 +10,36 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        studio: {
-          950: "#09090b",
-          900: "#121217",
-          850: "#181820",
-          800: "#22222e",
-          700: "#2e2e3d",
-          600: "#444459",
-          500: "#60607a",
-          accent: "#ff3b30", // BandLab signature red
-          accentHover: "#e03126",
-          cyan: "#00d2ff",
-          green: "#10b981",
-          purple: "#8b5cf6",
-          amber: "#f59e0b"
+        surface: {
+          0: "var(--surface-0)",
+          1: "var(--surface-1)",
+          2: "var(--surface-2)",
+          border: "var(--surface-border)",
+          strong: "var(--surface-border-strong)",
         },
+        chalk: "var(--text-primary)",
+        steel: "var(--text-secondary)",
+        slateMuted: "var(--text-muted)",
+        brand: {
+          DEFAULT: "var(--brand-primary)",
+          hover: "var(--brand-hover)",
+          active: "var(--brand-active)",
+          soft: "var(--brand-soft)",
+          border: "var(--brand-border)",
+        },
+        audio: {
+          rec: "var(--audio-rec)",
+          play: "var(--audio-play)",
+          cyan: "var(--audio-cyan)",
+          amber: "var(--audio-amber)",
+        },
+      },
+      borderRadius: {
+        none: "0px",
+        sm: "2px",
+        DEFAULT: "4px",
+        md: "4px",
+        lg: "6px",
       },
     },
   },
