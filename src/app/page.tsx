@@ -2,6 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { AuthProvider } from "@/context/AuthContext";
+import { useStudioStore } from "@/stores/useStudioStore";
+import { LandingView } from "@/components/landing/LandingView";
+import { DashboardView } from "@/components/dashboard/DashboardView";
 
 // Dynamically import StudioLayout with ssr: false so Web Audio API and window context work seamlessly
 const StudioLayout = dynamic(
@@ -24,10 +28,27 @@ const StudioLayout = dynamic(
   }
 );
 
+function AppViewSwitcher() {
+  const currentView = useStudioStore((state) => state.currentView);
+
+  switch (currentView) {
+    case "landing":
+      return <LandingView />;
+    case "dashboard":
+      return <DashboardView />;
+    case "studio":
+      return <StudioLayout />;
+    default:
+      return <DashboardView />;
+  }
+}
+
 export default function HomePage() {
   return (
     <ErrorBoundary>
-      <StudioLayout />
+      <AuthProvider>
+        <AppViewSwitcher />
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

@@ -4,6 +4,9 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { 
   User, 
   signInWithPopup, 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   signOut as fbSignOut, 
   onAuthStateChanged 
 } from "firebase/auth";
@@ -11,13 +14,20 @@ import { auth, googleProvider, isFirebaseAvailable } from "@/lib/firebase/config
 import { UserSettings } from "@/types/settings";
 import { getUserSettings, saveUserSettings } from "@/lib/supabase/settingsService";
 
+interface AuthResponse {
+  success: boolean;
+  error?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   guestId: string | null;
   settings: UserSettings | null;
   loading: boolean;
   isFirebaseAvailable: boolean;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => Promise<AuthResponse>;
+  loginWithEmail: (email: string, pass: string) => Promise<AuthResponse>;
+  signupWithEmail: (email: string, pass: string, displayName?: string) => Promise<AuthResponse>;
   loginAsGuest: () => void;
   logout: () => Promise<void>;
   updateSettings: (newSettings: Partial<UserSettings>) => Promise<void>;
@@ -58,7 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const data = await getUserSettings(identityId);
       if (email && !data.email) data.email = email;
-      if (displayName && data.display_name === "Producer") data.display_name = displayName;
+      if (displayName && (data.display_name === "Producer" || !data.display_name)) {
+        data.display_name = displayName;
+      }
       setSettings(data);
     } catch (err) {
       console.warn("Failed to load settings:", err);
@@ -123,10 +135,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (): Promise<AuthResponse> => {
     if (!isFirebaseAvailable || !auth || !googleProvider) {
-      alert("Cloud authentication requires internet connection. Your studio is currently in offline producer mode.");
-      return;
+      return { success: false, error: "Network connection required for Google sign-in. You are currently in offline guest mode." };
     }
 
     try {
@@ -135,10 +146,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.user) {
         safeSetStorage("bandlab_guest_id", "");
         setGuestId(null);
+        return { success: true };
       }
-    } catch (err) {
+      return { success: false, error: "Sign in was cancelled." };
+    } catch (err: unknown) {
       console.error("Google sign-in error:", err);
-      alert("Sign-in was cancelled or not supported in this environment. Continuing as guest.");
+      const msg = err instanceof Error ? err.message : "Google sign-in failed. In Android WebView, use Email/Password sign in.";
+      return { success: false, error: msg };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginWithEmail = async (email: string, pass: string): Promise<AuthResponse> => {
+    if (!isFirebaseAvailable || !auth) {
+      return { success: false, error: "Authentication service offline. Continuing in local guest mode." };
+    }
+    try {
+      setLoading(true);
+      const res = await signInWithEmailAndPassword(auth, email, pass);
+      if (res.user) {
+        safeSetStorage("bandlab_guest_id", "");
+        setGuestId(null);
+        return { success: true };
+      }
+      return { success: false, error: "Login failed." };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Invalid email or password.";
+      return { success: false, error: msg.replace("Firebase: ", "") };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signupWithEmail = async (email: string, pass: string, displayName?: string): Promise<AuthResponse> => {
+    if (!isFirebaseAvailable || !auth) {
+      return { success: false, error: "Authentication service offline. Continuing in local guest mode." };
+    }
+    try {
+      setLoading(true);
+      const res = await createUserWithEmailAndPassword(auth, email, pass);
+      if (res.user && displayName) {
+        try {
+          await updateProfile(res.user, { displayName });
+        } catch {
+          // ignore profile name update error
+        }
+      }
+      safeSetStorage("bandlab_guest_id", "");
+      setGuestId(null);
+      return { success: true };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Account creation failed.";
+      return { success: false, error: msg.replace("Firebase: ", "") };
     } finally {
       setLoading(false);
     }
@@ -182,6 +242,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         isFirebaseAvailable,
         loginWithGoogle,
+        loginWithEmail,
+        signupWithEmail,
         loginAsGuest,
         logout,
         updateSettings,

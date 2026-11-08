@@ -80,28 +80,31 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
         with:
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.2' }}
-          name: BandLab Studio Pro ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.2' }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.3' }}
+          name: BandLab Studio Pro ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.3' }}
           draft: false
           prerelease: false
           body: |
-            ## 🎛️ BandLab Studio Pro v1.0.2 Release
+            ## 🎛️ BandLab Studio Pro v1.0.3 Mobile Release
 
-            High-precision multi-track digital audio workstation (DAW) and mobile Android studio built with zero AI slop, strictly adhering to clean solid 60-30-10 OKLCH design principles.
+            Reverse-engineered 1-to-1 BandLab mobile app UX flow, high-precision multi-track DAW, and native Android studio built with zero AI slop, strictly adhering to clean solid 60-30-10 OKLCH design principles.
 
-            ### 🛠️ Resolved in v1.0.2:
-            - **Fixed Android Client-Side Exception:** Fixed `auth/invalid-api-key` crash on Android WebView startup by inlining valid client credentials during static build and adding crash-proof fallback to offline guest session.
-            - **Added Studio Recovery Guard:** Implemented top-level React `ErrorBoundary` with instant "Reload Audio Engine" recovery.
-            - **Safe Web Storage:** Protected all `localStorage` access against Android WebView sandboxed security restrictions.
-
-            ### 🚀 Production Features:
-            - **Web Studio & Android APK:** Multi-track DAW with track lanes, volume, pan, mute, and solo.
-            - **Real-Time AutoPitch & Vocal Suite:** Granular Doppler pitch shifter (`PitchShifterNode`), LFO Chorus/Vibrato, Tube Saturation, 4-Band Parametric EQ, Compressor, Space Reverb, and Tempo Delay.
-            - **Live Microphone Recording:** Real-time microphone input capture with live VU level meter and automatic clip placement on track lanes.
-            - **16-Step Beat Maker:** 8 synthesized drum channels (808 Bass, Kick, Snare, Clap, Hats, Perc, Crash) with real-time pattern preview and 16th-note timing.
-            - **1-Click Music Installation & Export:** Client-side `OfflineAudioContext` instant export to 320kbps MP3 or 24-bit studio WAV directly onto your device ($0 server cost).
-            - **Cloud User Settings & Firebase Auth:** Supabase `user_settings` sync and Firebase multi-provider auth with guest mode and full legal terms of service.
-            - **100% Automated Test Suite:** Verified across 11 test suites.
+            ### 🚀 New in v1.0.3:
+            - **Multi-Screen UX Flow:**
+              1. **Landing View:** High-converting discovery page with feature highlights, direct sign-in, and instant studio entry.
+              2. **Authentication System:** Complete Sign In / Sign Up modal supporting Email & Password authentication, Google OAuth, and Instant Guest fallback with zero friction.
+              3. **Mobile Creation Hub (Dashboard):** Authentic BandLab mobile dashboard with "+ Create New Project" hero card, Quick Launch tool triggers, My Projects library, starter templates (Trap, Pop, Drill), and fixed bottom navigation with the iconic centered red "+" button.
+              4. **Creation Bottom Sheet:** Instant selection between Voice/Mic with AutoPitch pre-armed, 16-Step Beat Maker, Audio Import, and Multi-track Studio.
+            - **Mobile-First Studio Ergonomics:**
+              - **Dedicated Mobile Tracks View:** Large touch cards for volume fader, pan fader, REC arm, Mute, Solo, audio clip waveform summaries, and inline audio file import.
+              - **Responsive View Switcher:** Header toggle between Tracks card view and Horizontal Multitrack Timeline.
+              - **Navigation Back to Projects:** 1-tap `< Projects` return button to dashboard with inline project title renaming.
+            - **Audio DSP & Modulations:**
+              - Real-time AutoPitch vocal tuning suite with Doppler pitch shifter.
+              - 16-Step Beat Maker drum machine with 8 synthesized voices.
+              - Live microphone recording with VU level metering.
+              - Client-side master mixdown export to 320kbps MP3 and 24-bit studio WAV.
+            - **100% Automated Test Suite:** Verified across all unit and DSP suites.
 
             ### 📱 Download Android APK
             Download **`app-debug.apk`** below to install directly on your Android phone!

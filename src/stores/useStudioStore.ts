@@ -31,6 +31,15 @@ export interface DrumStep {
 
 export type DrumMatrix = DrumStep[][]; // [soundIndex][stepIndex (0..15)]
 
+export interface ProjectSummary {
+  id: string;
+  name: string;
+  updatedAt: string;
+  trackCount: number;
+  bpm: number;
+  key: string;
+}
+
 export const DRUM_SOUNDS = [
   { id: "kick", name: "Kick 808", color: "#ff3b30" },
   { id: "snare", name: "Trap Snare", color: "#f59e0b" },
@@ -42,24 +51,73 @@ export const DRUM_SOUNDS = [
   { id: "crash", name: "Crash", color: "#3b82f6" },
 ];
 
-const INITIAL_DRUM_GRID: DrumMatrix = Array(8)
-  .fill(null)
-  .map(() =>
-    Array(16)
-      .fill(null)
-      .map(() => ({ active: false, velocity: 0.8 }))
-  );
+const createEmptyDrumGrid = (): DrumMatrix =>
+  Array(8)
+    .fill(null)
+    .map(() =>
+      Array(16)
+        .fill(null)
+        .map(() => ({ active: false, velocity: 0.8 }))
+    );
 
-// Default Trap Bounce preset
-INITIAL_DRUM_GRID[0][0] = { active: true, velocity: 1.0 }; // Kick
-INITIAL_DRUM_GRID[0][10] = { active: true, velocity: 0.9 };
-INITIAL_DRUM_GRID[1][4] = { active: true, velocity: 1.0 }; // Snare
-INITIAL_DRUM_GRID[1][12] = { active: true, velocity: 1.0 };
-for (let i = 0; i < 16; i += 2) {
-  INITIAL_DRUM_GRID[3][i] = { active: true, velocity: 0.7 }; // Closed Hat 8th notes
-}
+const createDefaultTrapGrid = (): DrumMatrix => {
+  const grid = createEmptyDrumGrid();
+  grid[0][0] = { active: true, velocity: 1.0 }; // Kick
+  grid[0][10] = { active: true, velocity: 0.9 };
+  grid[1][4] = { active: true, velocity: 1.0 }; // Snare
+  grid[1][12] = { active: true, velocity: 1.0 };
+  for (let i = 0; i < 16; i += 2) {
+    grid[3][i] = { active: true, velocity: 0.7 }; // Closed Hat 8th notes
+  }
+  return grid;
+};
+
+const DEFAULT_PROJECTS: ProjectSummary[] = [
+  {
+    id: "proj-trap-starter",
+    name: "Midnight Trap Session",
+    updatedAt: "Just now",
+    trackCount: 3,
+    bpm: 140,
+    key: "A Minor",
+  },
+  {
+    id: "proj-vocal-pop",
+    name: "Pop Vocal Melody (AutoPitch)",
+    updatedAt: "2 hours ago",
+    trackCount: 2,
+    bpm: 120,
+    key: "C Major",
+  },
+];
 
 interface StudioState {
+  // Navigation Screens
+  currentView: "landing" | "dashboard" | "studio";
+  setCurrentView: (view: "landing" | "dashboard" | "studio") => void;
+
+  // Mobile Workspace Responsive Tab
+  mobileActiveTab: "tracks" | "timeline";
+  setMobileActiveTab: (tab: "tracks" | "timeline") => void;
+
+  // Project Management
+  currentProjectId: string;
+  projectName: string;
+  savedProjects: ProjectSummary[];
+  setProjectName: (name: string) => void;
+  createNewProject: (toolType?: "vocal" | "beatmaker" | "import" | "studio") => void;
+  loadProject: (id: string) => void;
+  deleteProject: (id: string) => void;
+
+  // Quick Create Bottom Sheet
+  isCreateSheetOpen: boolean;
+  setIsCreateSheetOpen: (open: boolean) => void;
+
+  // Auth Modal Visibility
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+
+  // DAW State
   isPlaying: boolean;
   isRecording: boolean;
   currentTime: number;
@@ -74,7 +132,7 @@ interface StudioState {
   selectedTrackId: string | null;
   activeModal: "vocal" | "beatmaker" | "export" | "settings" | null;
 
-  // Actions
+  // Transport & Engine Actions
   setIsPlaying: (isPlaying: boolean) => void;
   setIsRecording: (isRecording: boolean) => void;
   setCurrentTime: (time: number) => void;
@@ -84,7 +142,7 @@ interface StudioState {
   setMasterVolume: (volume: number) => void;
   setSelectedTrackId: (id: string | null) => void;
   setActiveModal: (modal: "vocal" | "beatmaker" | "export" | "settings" | null) => void;
-  
+
   // Track Actions
   addTrack: (type: "vocal" | "beat" | "drum", name?: string) => string;
   removeTrack: (id: string) => void;
@@ -101,15 +159,186 @@ interface StudioState {
 }
 
 export const useStudioStore = create<StudioState>((set, get) => ({
+  // Defaults to Landing so users experience the full BandLab discovery & onboarding flow
+  currentView: "landing",
+  setCurrentView: (currentView) => set({ currentView }),
+
+  mobileActiveTab: "tracks",
+  setMobileActiveTab: (mobileActiveTab) => set({ mobileActiveTab }),
+
+  currentProjectId: "proj-session-1",
+  projectName: "Untitled Session 1",
+  savedProjects: DEFAULT_PROJECTS,
+  setProjectName: (projectName) => set({ projectName }),
+
+  isCreateSheetOpen: false,
+  setIsCreateSheetOpen: (isCreateSheetOpen) => set({ isCreateSheetOpen }),
+
+  isAuthModalOpen: false,
+  setIsAuthModalOpen: (isAuthModalOpen) => set({ isAuthModalOpen }),
+
+  createNewProject: (toolType = "studio") => {
+    const id = `proj-${Date.now()}`;
+    let newTracks: StudioTrack[] = [];
+    let initialBpm = 120;
+    let initialKey = "C Major";
+    let modalToOpen: "vocal" | "beatmaker" | "export" | "settings" | null = null;
+    let name = "New Session";
+
+    if (toolType === "vocal") {
+      name = "Vocal Take Session";
+      modalToOpen = "vocal";
+      newTracks = [
+        {
+          id: `track-${Date.now()}-1`,
+          name: "Lead Vocal (AutoPitch)",
+          type: "vocal",
+          color: "#ff3b30",
+          volume: 0.9,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: true,
+          clips: [],
+        },
+        {
+          id: `track-${Date.now()}-2`,
+          name: "Backing Track",
+          type: "beat",
+          color: "#00d2ff",
+          volume: 0.8,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: false,
+          clips: [],
+        },
+      ];
+    } else if (toolType === "beatmaker") {
+      name = "808 Beat Project";
+      initialBpm = 140;
+      initialKey = "A Minor";
+      modalToOpen = "beatmaker";
+      newTracks = [
+        {
+          id: `track-${Date.now()}-1`,
+          name: "808 Drum Machine",
+          type: "drum",
+          color: "#8b5cf6",
+          volume: 0.85,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: false,
+          clips: [],
+        },
+        {
+          id: `track-${Date.now()}-2`,
+          name: "Instrumental Stem",
+          type: "beat",
+          color: "#00d2ff",
+          volume: 0.8,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: false,
+          clips: [],
+        },
+      ];
+    } else {
+      name = "Full Studio Project";
+      newTracks = [
+        {
+          id: `track-${Date.now()}-1`,
+          name: "Lead Vocal (AutoPitch)",
+          type: "vocal",
+          color: "#ff3b30",
+          volume: 0.9,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: true,
+          clips: [],
+        },
+        {
+          id: `track-${Date.now()}-2`,
+          name: "Instrumental Beat",
+          type: "beat",
+          color: "#00d2ff",
+          volume: 0.8,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: false,
+          clips: [],
+        },
+        {
+          id: `track-${Date.now()}-3`,
+          name: "808 Drum Machine",
+          type: "drum",
+          color: "#8b5cf6",
+          volume: 0.85,
+          pan: 0,
+          isMuted: false,
+          isSoloed: false,
+          isArmed: false,
+          clips: [],
+        },
+      ];
+    }
+
+    const newProjectSummary: ProjectSummary = {
+      id,
+      name,
+      updatedAt: "Just now",
+      trackCount: newTracks.length,
+      bpm: initialBpm,
+      key: initialKey,
+    };
+
+    set((state) => ({
+      currentProjectId: id,
+      projectName: name,
+      tracks: newTracks,
+      bpm: initialBpm,
+      key: initialKey,
+      drumMatrix: toolType === "beatmaker" ? createDefaultTrapGrid() : createEmptyDrumGrid(),
+      selectedTrackId: newTracks[0]?.id || null,
+      activeModal: modalToOpen,
+      currentView: "studio",
+      isCreateSheetOpen: false,
+      savedProjects: [newProjectSummary, ...state.savedProjects],
+    }));
+  },
+
+  loadProject: (id: string) => {
+    const proj = get().savedProjects.find((p) => p.id === id);
+    if (proj) {
+      set({
+        currentProjectId: proj.id,
+        projectName: proj.name,
+        bpm: proj.bpm,
+        key: proj.key,
+        currentView: "studio",
+      });
+    }
+  },
+
+  deleteProject: (id: string) => {
+    set((state) => ({
+      savedProjects: state.savedProjects.filter((p) => p.id !== id),
+    }));
+  },
+
   isPlaying: false,
   isRecording: false,
   currentTime: 0,
-  totalDuration: 180, // 3 minutes default timeline
+  totalDuration: 180,
   bpm: 120,
   key: "C Major",
   isMetronomeOn: true,
   masterVolume: 0.85,
-  drumMatrix: INITIAL_DRUM_GRID,
+  drumMatrix: createDefaultTrapGrid(),
   selectedTrackId: "track-vocal-1",
   activeModal: null,
 
@@ -249,13 +478,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
 
   clearDrumMatrix: () =>
     set({
-      drumMatrix: Array(8)
-        .fill(null)
-        .map(() =>
-          Array(16)
-            .fill(null)
-            .map(() => ({ active: false, velocity: 0.8 }))
-        ),
+      drumMatrix: createEmptyDrumGrid(),
     }),
 
   updateVocalSettings: (updates) =>

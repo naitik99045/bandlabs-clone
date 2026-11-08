@@ -8,10 +8,12 @@ import {
   Mic, 
   Download, 
   Settings, 
-  Grid,
-  LogIn,
-  SlidersHorizontal,
-  Circle
+  Grid, 
+  ChevronLeft,
+  Circle,
+  Sliders,
+  AlignLeft,
+  Check
 } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { audioEngine } from "@/lib/audio/AudioEngine";
@@ -30,6 +32,12 @@ export function TransportBar() {
     tracks,
     drumMatrix,
     vocalSettings,
+    projectName,
+    setProjectName,
+    currentView,
+    setCurrentView,
+    mobileActiveTab,
+    setMobileActiveTab,
     setIsPlaying,
     setIsRecording,
     setCurrentTime,
@@ -40,10 +48,12 @@ export function TransportBar() {
     addClipToTrack,
   } = useStudioStore();
 
-  const { user, loginWithGoogle } = useAuth();
+  const { user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [liveMicLevel, setLiveMicLevel] = useState(0);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [tempName, setTempName] = useState(projectName);
 
   const playStartTimeRef = useRef<number>(0);
   const startOffsetRef = useRef<number>(0);
@@ -170,21 +180,85 @@ export function TransportBar() {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}.${ms}`;
   };
 
+  const saveProjectName = () => {
+    if (tempName.trim()) {
+      setProjectName(tempName.trim());
+    }
+    setIsEditingName(false);
+  };
+
   return (
-    <header className="h-14 border-b border-surface-border bg-surface-1 px-4 flex items-center justify-between select-none">
-      {/* Brand & Studio Architecture Identifier */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 font-semibold text-sm tracking-tight text-chalk">
-          <span className="w-2.5 h-2.5 bg-brand shrink-0" />
-          <span className="font-bold">BANDLAB</span>
-          <span className="text-[11px] font-mono px-1.5 py-0.5 bg-surface-2 border border-surface-border text-steel">
-            STUDIO PRO
-          </span>
+    <header className="border-b border-surface-border bg-surface-1 px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 select-none shrink-0">
+      {/* Top Left: Navigation & Project Title */}
+      <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+        <div className="flex items-center gap-2">
+          {/* Back to Projects Button */}
+          <button
+            onClick={() => setCurrentView("dashboard")}
+            className="flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-2 hover:bg-surface-strong border border-surface-border text-steel hover:text-chalk text-xs font-mono transition"
+            title="Return to Projects Dashboard"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Projects</span>
+          </button>
+
+          {/* Project Title (Editable) */}
+          {isEditingName ? (
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                value={tempName}
+                onChange={(e) => setTempName(e.target.value)}
+                onBlur={saveProjectName}
+                onKeyDown={(e) => e.key === "Enter" && saveProjectName()}
+                autoFocus
+                className="bg-surface-0 border border-brand rounded-sm px-2 py-0.5 text-xs font-bold text-chalk font-mono focus:outline-none"
+              />
+              <button onClick={saveProjectName} className="text-brand p-1">
+                <Check className="w-3 h-3" />
+              </button>
+            </div>
+          ) : (
+            <span
+              onClick={() => {
+                setTempName(projectName);
+                setIsEditingName(true);
+              }}
+              className="text-xs font-bold text-chalk truncate max-w-[140px] sm:max-w-[200px] cursor-pointer hover:underline"
+              title="Click to rename project"
+            >
+              {projectName}
+            </span>
+          )}
+        </div>
+
+        {/* Mobile View Switcher (Tracks vs Timeline) */}
+        <div className="flex sm:hidden border border-surface-border rounded-sm overflow-hidden text-[10px] font-mono">
+          <button
+            onClick={() => setMobileActiveTab("tracks")}
+            className={`px-2 py-1 transition ${
+              mobileActiveTab === "tracks"
+                ? "bg-brand text-surface-0 font-bold"
+                : "bg-surface-0 text-slateMuted"
+            }`}
+          >
+            Tracks
+          </button>
+          <button
+            onClick={() => setMobileActiveTab("timeline")}
+            className={`px-2 py-1 transition ${
+              mobileActiveTab === "timeline"
+                ? "bg-brand text-surface-0 font-bold"
+                : "bg-surface-0 text-slateMuted"
+            }`}
+          >
+            Timeline
+          </button>
         </div>
       </div>
 
       {/* Center Primary Transport Controls */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 w-full sm:w-auto">
         {/* Playback Button Group */}
         <div className="flex items-center bg-surface-0 border border-surface-border p-0.5">
           <button
@@ -197,7 +271,7 @@ export function TransportBar() {
 
           <button
             onClick={handlePlayToggle}
-            className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition ${
+            className={`px-2.5 sm:px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition ${
               isPlaying
                 ? "bg-audio-play text-surface-0 font-bold"
                 : "hover:bg-surface-2 text-chalk"
@@ -219,7 +293,7 @@ export function TransportBar() {
 
           <button
             onClick={handleRecordToggle}
-            className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition relative ${
+            className={`px-2.5 sm:px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition relative ${
               isRecording
                 ? "bg-audio-rec text-white font-bold"
                 : "hover:bg-surface-2 text-audio-rec"
@@ -238,12 +312,12 @@ export function TransportBar() {
         </div>
 
         {/* Monospace Timecode */}
-        <div className="bg-surface-0 border border-surface-border px-3 py-1.5 font-mono-numbers text-xs text-audio-cyan tracking-wider">
+        <div className="bg-surface-0 border border-surface-border px-2 sm:px-3 py-1.5 font-mono-numbers text-xs text-audio-cyan tracking-wider">
           {formatTime(currentTime)}
         </div>
 
         {/* BPM & Clock */}
-        <div className="flex items-center gap-1 bg-surface-0 border border-surface-border px-2.5 py-1 text-xs">
+        <div className="flex items-center gap-1 bg-surface-0 border border-surface-border px-2 py-1 text-xs">
           <span className="text-slateMuted font-mono text-[10px]">BPM</span>
           <input
             type="number"
@@ -251,12 +325,12 @@ export function TransportBar() {
             max={240}
             value={bpm}
             onChange={(e) => setBpm(Number(e.target.value))}
-            className="w-11 bg-transparent text-chalk font-mono text-right focus:outline-none"
+            className="w-10 bg-transparent text-chalk font-mono text-right focus:outline-none"
           />
         </div>
 
         {/* Musical Key */}
-        <div className="flex items-center gap-1 bg-surface-0 border border-surface-border px-2.5 py-1 text-xs">
+        <div className="hidden sm:flex items-center gap-1 bg-surface-0 border border-surface-border px-2 py-1 text-xs">
           <span className="text-slateMuted font-mono text-[10px]">KEY</span>
           <select
             value={key}
@@ -275,7 +349,7 @@ export function TransportBar() {
         {/* Metronome Click Toggle */}
         <button
           onClick={toggleMetronome}
-          className={`px-2.5 py-1.5 text-[11px] font-mono border transition ${
+          className={`px-2 py-1.5 text-[10px] font-mono border transition ${
             isMetronomeOn
               ? "bg-surface-2 text-audio-cyan border-surface-strong"
               : "bg-surface-0 text-slateMuted border-surface-border hover:text-steel"
@@ -286,38 +360,40 @@ export function TransportBar() {
         </button>
       </div>
 
-      {/* Right Drawer Tools & 10% Accent Primary CTA */}
-      <div className="flex items-center gap-2">
+      {/* Right Drawer Tools & Primary CTA */}
+      <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
         {/* Vocal Suite Trigger */}
         <button
           onClick={() => setActiveModal("vocal")}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
+          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
         >
           <Mic className="w-3.5 h-3.5 text-brand" />
-          <span>Vocal Suite</span>
+          <span className="hidden sm:inline">Vocal Suite</span>
+          <span className="sm:hidden">Vocal</span>
         </button>
 
         {/* Beat Maker Trigger */}
         <button
           onClick={() => setActiveModal("beatmaker")}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
+          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
         >
           <Grid className="w-3.5 h-3.5 text-audio-amber" />
-          <span>Beat Maker</span>
+          <span className="hidden sm:inline">Beat Maker</span>
+          <span className="sm:hidden">Beats</span>
         </button>
 
-        {/* 10% ACCENT: Solid Export CTA */}
+        {/* Solid Export CTA */}
         <button
           onClick={handleDownloadMusic}
           disabled={isExporting}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-brand hover:bg-brand-hover active:bg-brand-active text-white border border-brand transition disabled:opacity-50"
-          title="Render and Download Multi-Track Master (MP3 / WAV)"
+          className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-brand hover:bg-brand-hover text-surface-0 border border-brand transition disabled:opacity-50"
+          title="Render Master Mixdown (MP3 / WAV)"
         >
           <Download className="w-3.5 h-3.5" />
-          <span>{isExporting ? `Bouncing ${exportProgress}%` : "Export Master"}</span>
+          <span>{isExporting ? `${exportProgress}%` : "Export"}</span>
         </button>
 
-        {/* User Preferences */}
+        {/* Preferences */}
         <button
           onClick={() => setActiveModal("settings")}
           className="p-1.5 bg-surface-0 hover:bg-surface-2 border border-surface-border text-steel hover:text-chalk transition"
@@ -325,23 +401,6 @@ export function TransportBar() {
         >
           <Settings className="w-3.5 h-3.5" />
         </button>
-
-        {/* Identity & Session */}
-        {user ? (
-          <div className="pl-1 text-xs">
-            <span className="px-2 py-1 bg-surface-2 border border-surface-border text-steel font-mono text-[11px]">
-              {user.displayName || user.email?.split("@")[0] || "PRODUCER"}
-            </span>
-          </div>
-        ) : (
-          <button
-            onClick={loginWithGoogle}
-            className="flex items-center gap-1 px-2.5 py-1.5 bg-surface-0 hover:bg-surface-2 border border-surface-border text-steel text-xs font-medium transition"
-          >
-            <LogIn className="w-3 h-3" />
-            <span>Sign In</span>
-          </button>
-        )}
       </div>
     </header>
   );
