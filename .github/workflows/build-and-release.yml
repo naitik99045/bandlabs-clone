@@ -31,15 +31,17 @@ jobs:
       - name: Run automated DAW and DSP test suite
         run: npm test
 
-      - name: Set up Java 17 Temurin
+      - name: Set up Java 21 Temurin
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: gradle
 
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
+      - name: Normalize line endings and permissions for gradlew
+        run: |
+          sed -i 's/\r$//' android/gradlew
+          chmod +x android/gradlew
 
       - name: Prepare Android Google Services configuration
         run: |
@@ -52,7 +54,7 @@ jobs:
         run: npm run build
 
       - name: Sync Capacitor Android Project
-        run: npx cap sync android
+        run: npx cap sync android --verbose
 
       - name: Compile Android APK via Gradle
         run: |
