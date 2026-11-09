@@ -41,14 +41,14 @@ export interface ProjectSummary {
 }
 
 export const DRUM_SOUNDS = [
-  { id: "kick", name: "Kick 808", color: "#ff3b30" },
-  { id: "snare", name: "Trap Snare", color: "#f59e0b" },
-  { id: "clap", name: "Bright Clap", color: "#eab308" },
-  { id: "hihat_closed", name: "Closed Hat", color: "#10b981" },
-  { id: "hihat_open", name: "Open Hat", color: "#06b6d4" },
-  { id: "bass808", name: "Sub 808", color: "#8b5cf6" },
-  { id: "perc", name: "Rim / Perc", color: "#ec4899" },
-  { id: "crash", name: "Crash", color: "#3b82f6" },
+  { id: "kick", name: "Kick 808", color: "oklch(64% 0.16 30)" },
+  { id: "snare", name: "Trap Snare", color: "oklch(74% 0.14 85)" },
+  { id: "clap", name: "Bright Clap", color: "oklch(72% 0.12 95)" },
+  { id: "hihat_closed", name: "Closed Hat", color: "oklch(78% 0.16 168)" },
+  { id: "hihat_open", name: "Open Hat", color: "oklch(75% 0.13 185)" },
+  { id: "bass808", name: "Sub 808", color: "oklch(68% 0.10 240)" },
+  { id: "perc", name: "Rim / Perc", color: "oklch(72% 0.13 130)" },
+  { id: "crash", name: "Crash", color: "oklch(76% 0.12 210)" },
 ];
 
 const createEmptyDrumGrid = (): DrumMatrix =>
@@ -193,7 +193,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-1`,
           name: "Lead Vocal (AutoPitch)",
           type: "vocal",
-          color: "#ff3b30",
+          color: "oklch(78% 0.16 168)",
           volume: 0.9,
           pan: 0,
           isMuted: false,
@@ -205,7 +205,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-2`,
           name: "Backing Track",
           type: "beat",
-          color: "#00d2ff",
+          color: "oklch(74% 0.14 85)",
           volume: 0.8,
           pan: 0,
           isMuted: false,
@@ -224,7 +224,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-1`,
           name: "808 Drum Machine",
           type: "drum",
-          color: "#8b5cf6",
+          color: "oklch(68% 0.10 240)",
           volume: 0.85,
           pan: 0,
           isMuted: false,
@@ -236,7 +236,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-2`,
           name: "Instrumental Stem",
           type: "beat",
-          color: "#00d2ff",
+          color: "oklch(74% 0.14 85)",
           volume: 0.8,
           pan: 0,
           isMuted: false,
@@ -252,7 +252,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-1`,
           name: "Lead Vocal (AutoPitch)",
           type: "vocal",
-          color: "#ff3b30",
+          color: "oklch(78% 0.16 168)",
           volume: 0.9,
           pan: 0,
           isMuted: false,
@@ -264,7 +264,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-2`,
           name: "Instrumental Beat",
           type: "beat",
-          color: "#00d2ff",
+          color: "oklch(74% 0.14 85)",
           volume: 0.8,
           pan: 0,
           isMuted: false,
@@ -276,7 +276,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           id: `track-${Date.now()}-3`,
           name: "808 Drum Machine",
           type: "drum",
-          color: "#8b5cf6",
+          color: "oklch(68% 0.10 240)",
           volume: 0.85,
           pan: 0,
           isMuted: false,
@@ -411,9 +411,9 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       (type === "vocal" ? `Vocal ${get().tracks.filter((t) => t.type === "vocal").length + 1}` :
        type === "beat" ? "Backing Beat" : "Drum Track");
     const colors = {
-      vocal: "#ff3b30",
-      beat: "#00d2ff",
-      drum: "#8b5cf6",
+      vocal: "oklch(78% 0.16 168)",
+      beat: "oklch(74% 0.14 85)",
+      drum: "oklch(68% 0.10 240)",
     };
 
     set((state) => ({

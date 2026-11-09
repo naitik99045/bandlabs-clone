@@ -61,9 +61,13 @@
   - *Action:* Built authentic 4-screen BandLab mobile architecture: (1) Landing View with hero & direct access; (2) Authentication Modal with Email/Password + Google + Guest; (3) Dashboard creation hub with "+ Create New Project", Quick Launch tools, starter templates (Trap, Pop, Drill), project library, and bottom navigation with central red "+" button; (4) Mobile-first Studio with vertical track cards (`TracksMobileView`), touch faders, pan, rec arm, waveform clips, and Timeline view switcher.
   - *Target Files:* `src/stores/useStudioStore.ts`, `src/components/landing/LandingView.tsx`, `src/components/auth/AuthModal.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/daw/TracksMobileView.tsx`, `src/components/daw/StudioLayout.tsx`, `src/components/daw/TransportBar.tsx`, `src/app/page.tsx`
   - *Done When:* Complete end-to-end user navigation flow is verified on mobile emulation, all 11 automated unit/DSP tests pass, Next.js static build succeeds with zero errors, and native APK is compiled locally and published to GitHub Releases (v1.0.3).
+- [x] **Task 4.4: Gunmetal Flint & Signal Mint 60-30-10 Redesign (Anti-Slop Strict Pass)**
+  - *Action:* Replaced orange/black color combo with Cold Gunmetal Flint (`oklch(19% 0.018 220)`), Panel Slate (`oklch(24% 0.022 220)`), and Signal Mint (`oklch(78% 0.16 168)`). Removed all primary colors (pure red, blue, yellow) and all gradients. Eliminated 3-card rows, glassmorphism blur, decorative sparkles, and universal drop shadows. Built Blueprint B interactive Web Audio live synth demo pad on Landing split stage.
+  - *Target Files:* `src/styles/globals.css`, `src/components/landing/LandingView.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/daw/TransportBar.tsx`, `src/components/daw/TracksMobileView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/auth/AuthModal.tsx`, `src/components/daw/VocalSuiteModal.tsx`, `src/components/daw/BeatMakerModal.tsx`, `src/components/settings/UserSettingsModal.tsx`, `src/stores/useStudioStore.ts`
+  - *Done When:* 11/11 tests pass, Next.js static export succeeds, Android APK is built cleanly.
 
 ## Phase 5: Cloud Compilation & Release
-- [ ] **Task 5.1: Push Fixes, Tag v1.0.2 & Publish Release**
-  - *Action:* Commit changes to git, tag as `v1.0.2`, push to GitHub, and verify GitHub Actions builds and publishes the new APK release.
+- [x] **Task 5.1: Push Fixes, Tag v1.0.5 & Publish Release**
+  - *Action:* Commit changes to git, tag as `v1.0.5`, push to GitHub, and verify GitHub Actions builds and publishes the new APK release.
   - *Target Files:* `.github/workflows/build-and-release.yml`
-  - *Done When:* GitHub Release v1.0.2 is live with downloadable `app-debug.apk`.
+  - *Done When:* GitHub Release v1.0.5 is live with downloadable `app-debug.apk`.

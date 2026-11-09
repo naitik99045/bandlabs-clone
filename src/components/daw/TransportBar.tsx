@@ -270,10 +270,10 @@ export function TransportBar() {
       </header>
 
       {/* 📱 100% Android Native Bottom Transport Dock (< sm) */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-1/95 backdrop-blur-md border-t border-surface-border px-3 py-2 flex items-center justify-between select-none">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-1 border-t border-surface-border px-3 py-2 flex items-center justify-between select-none">
         {/* Left: View Switcher (Tracks vs Arranger) & Timecode */}
         <div className="flex items-center gap-2">
-          <div className="flex border border-surface-border rounded-sm overflow-hidden text-[10px] font-mono">
+          <div className="flex border border-surface-border overflow-hidden text-[10px] font-mono">
             <button
               onClick={() => setMobileActiveTab("tracks")}
               className={`px-2 py-1 transition ${
@@ -301,24 +301,24 @@ export function TransportBar() {
           </span>
         </div>
 
-        {/* Center: Big Thumb-Friendly Play & Record Controls */}
+        {/* Center: Tactile Audio Hardware Play & Record Keys */}
         <div className="flex items-center gap-2">
           {/* Rewind */}
           <button
             onClick={handleStop}
-            className="w-8 h-8 rounded-full bg-surface-2 border border-surface-border flex items-center justify-center text-steel hover:text-chalk active:scale-95 transition"
+            className="w-8 h-8 bg-surface-2 border border-surface-border flex items-center justify-center text-steel hover:text-chalk active:scale-95 transition"
             title="Rewind to start"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
 
-          {/* Big Circular Play / Pause */}
+          {/* Tactile Hardware Play / Pause */}
           <button
             onClick={handlePlayToggle}
-            className={`w-11 h-11 rounded-full flex items-center justify-center shadow-md active:scale-95 transition ${
+            className={`w-11 h-11 border flex items-center justify-center active:scale-95 transition ${
               isPlaying
-                ? "bg-audio-play text-surface-0"
-                : "bg-surface-2 border border-surface-border text-chalk hover:text-brand"
+                ? "bg-audio-play text-surface-0 border-audio-play font-bold"
+                : "bg-surface-2 border-surface-border text-chalk hover:border-brand hover:text-brand"
             }`}
             title="Play / Pause"
           >
@@ -329,13 +329,13 @@ export function TransportBar() {
             )}
           </button>
 
-          {/* Big Circular Red Record */}
+          {/* Tactile Hardware Carmine Record */}
           <button
             onClick={handleRecordToggle}
-            className={`w-11 h-11 rounded-full flex items-center justify-center shadow-md active:scale-95 transition ${
+            className={`w-11 h-11 border flex items-center justify-center active:scale-95 transition ${
               isRecording
-                ? "bg-audio-rec text-white animate-pulse"
-                : "bg-surface-2 border border-audio-rec/60 text-audio-rec hover:border-audio-rec"
+                ? "bg-audio-rec text-white border-audio-rec animate-pulse font-bold"
+                : "bg-surface-2 border-audio-rec/60 text-audio-rec hover:border-audio-rec"
             }`}
             title="Record Vocal Take"
           >

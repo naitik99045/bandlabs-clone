@@ -45,8 +45,8 @@ export function BeatMakerModal() {
   if (activeModal !== "beatmaker") return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 select-none">
-      <div className="bg-surface-1 border border-surface-border rounded-sm w-full max-w-4xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/80 p-4 select-none">
+      <div className="bg-surface-1 border border-surface-border w-full max-w-4xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2.5">

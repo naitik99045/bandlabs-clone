@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Volume2, Mic, Music, Trash2, Upload, Plus, Sparkles, Grid } from "lucide-react";
+import { Volume2, Mic, Music, Trash2, Upload, Plus, Sliders, Grid } from "lucide-react";
 import { useStudioStore, StudioTrack } from "@/stores/useStudioStore";
 import { audioEngine } from "@/lib/audio/AudioEngine";
 
@@ -151,9 +151,9 @@ export function TracksMobileView() {
                     e.stopPropagation();
                     setActiveModal("vocal");
                   }}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-brand/15 border border-brand/30 text-brand text-[10px] font-mono active:scale-95 transition hover:bg-brand/25"
+                  className="flex items-center gap-1.5 px-2.5 py-1 bg-brand/15 border border-brand/30 text-brand text-[10px] font-mono active:scale-95 transition hover:bg-brand/25"
                 >
-                  <Sparkles className="w-3 h-3" />
+                  <Sliders className="w-3 h-3" />
                   <span>AutoPitch Tuning Chain</span>
                 </button>
               )}

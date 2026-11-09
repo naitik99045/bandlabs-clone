@@ -3,29 +3,29 @@
 @tailwind utilities;
 
 :root {
-  /* 60% Dominant Base: Elevated Carbon */
-  --surface-0: oklch(16% 0.02 250);
-  /* 30% Structure: Panel Slate & Softened Chalk */
-  --surface-1: oklch(21% 0.02 250);
-  --surface-2: oklch(26% 0.02 250);
-  --surface-border: oklch(32% 0.02 250);
-  --surface-border-strong: oklch(42% 0.02 250);
-  --text-primary: oklch(93% 0.005 250);
-  --text-secondary: oklch(68% 0.015 250);
-  --text-muted: oklch(48% 0.02 250);
+  /* 60% Dominant Base: Gunmetal Flint (Cold Matte Studio Chassis - Non-Black) */
+  --surface-0: oklch(19% 0.018 220);
+  /* 30% Structure: Panel Slate, Channel Beds & High-Contrast Aluminum Chalk */
+  --surface-1: oklch(24% 0.022 220);
+  --surface-2: oklch(29% 0.025 220);
+  --surface-border: oklch(36% 0.022 220);
+  --surface-border-strong: oklch(46% 0.022 220);
+  --text-primary: oklch(92% 0.008 220);
+  --text-secondary: oklch(72% 0.015 220);
+  --text-muted: oklch(52% 0.018 220);
 
-  /* 10% Accent: International Signal Orange */
-  --brand-primary: oklch(68% 0.19 45);
-  --brand-hover: oklch(from var(--brand-primary) calc(l + 0.08) c h);
-  --brand-active: oklch(from var(--brand-primary) calc(l - 0.08) c h);
+  /* 10% Accent: Signal Mint / Electric Phosphor (Strictly Solid, Non-Primary, Non-Orange) */
+  --brand-primary: oklch(78% 0.16 168);
+  --brand-hover: oklch(84% 0.14 168);
+  --brand-active: oklch(72% 0.18 168);
   --brand-soft: color-mix(in oklch, var(--brand-primary) 14%, var(--surface-0));
   --brand-border: color-mix(in oklch, var(--brand-primary) 40%, var(--surface-0));
 
-  /* Precision Audio Solid Tokens - STRICTLY ZERO GRADIENTS */
-  --audio-rec: oklch(58% 0.22 25);
-  --audio-play: oklch(70% 0.18 145);
-  --audio-cyan: oklch(72% 0.14 210);
-  --audio-amber: oklch(74% 0.16 80);
+  /* Precision Audio Solid Tokens - STRICTLY ZERO GRADIENTS & NON-PRIMARY */
+  --audio-rec: oklch(64% 0.18 28);      /* Nordic Carmine */
+  --audio-play: oklch(78% 0.16 168);    /* Signal Mint */
+  --audio-cyan: oklch(76% 0.11 205);    /* Arctic Cyan */
+  --audio-amber: oklch(74% 0.14 85);    /* Warm Ochre */
 }
 
 body {
@@ -46,7 +46,7 @@ body {
   font-feature-settings: "tnum" on, "zero" on;
 }
 
-/* Custom 1px Solid DAW Scrollbars (No Gradients) */
+/* Custom 1px Solid DAW Scrollbars (Strictly No Gradients) */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { X, Mic, Grid, Upload, SlidersHorizontal, Sparkles } from "lucide-react";
+import { X, Mic, Grid, Upload, SlidersHorizontal } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { audioEngine } from "@/lib/audio/AudioEngine";
 
@@ -43,8 +43,8 @@ export function CreateTrackSheet() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 p-0 sm:p-4 select-none">
-      <div className="bg-surface-1 border-t sm:border border-surface-border rounded-t-lg sm:rounded-sm w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-surface-0/80 p-0 sm:p-4 select-none">
+      <div className="bg-surface-1 border-t sm:border border-surface-border w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div>

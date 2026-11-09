@@ -1,5 +1,5 @@
 # Project State & Context: BandLab Mobile Flow & Android APK Verification
-**Last Updated:** 2026-11-08 17:35:00
+**Last Updated:** 2026-11-09 14:33:00
 
 ## 1. Project Overview
 BandLab Clone is a high-precision multi-track digital audio workstation (DAW) for web and mobile Android. It features:
@@ -10,42 +10,50 @@ BandLab Clone is a high-precision multi-track digital audio workstation (DAW) fo
 - 16-step beat machine with 8 synthesized drum channels (808 Bass, Kick, Snare, Clap, Closed Hat, Open Hat, Perc, Crash).
 - Client-side faster-than-realtime multi-track mixdown export to 320kbps MP3 and 24-bit WAV ($0 cloud costs).
 - Crash-proof Firebase authentication (Email/Password, Google OAuth, Instant Guest) with Android WebView safe storage.
-- Strict `qwenton-ui` 60-30-10 solid OKLCH design with zero AI slop and zero gradients.
+- Strict `qwenton-ui` 60-30-10 solid OKLCH design with zero AI slop, zero gradients, and zero primary colors.
 
 ---
 
-## 2. Brainstormed Ideas & Architecture: Mobile APK Verification & Debugging Pass
-### Deep APK Inspection Results:
+## 2. qwenton-ui Visual Design System & Zero AI Slop Audit
+### Color Palette (Tri-Color 60-30-10 Hierarchy):
+- **60% Dominant Canvas:** Cold Gunmetal Flint (`oklch(19% 0.018 220)`).
+- **30% Secondary Structure:** Panel Slate (`oklch(24% 0.022 220)`), Elevated Keybeds (`oklch(29% 0.025 220)`), Seam Borders (`oklch(36% 0.022 220)`), Aluminum Chalk Text (`oklch(92% 0.008 220)`).
+- **10% Accent:** Signal Mint / Electric Phosphor (`oklch(78% 0.16 168)`).
+- **Zero Primary Colors:** Non-primary studio markers: Nordic Carmine (`oklch(64% 0.18 28)` for REC), Warm Ochre (`oklch(74% 0.14 85)` for Beats), Teal Slate (`oklch(76% 0.11 205)` for Instruments), Indigo Slate (`oklch(68% 0.10 240)` for 808s).
+- **Zero Gradients:** Every background, border, button, and slider uses solid `oklch()`.
+
+### Negative Constraints Enforced (qwenton-review compliance):
+- **NO 3-card feature rows:** Landing hero replaced with Blueprint B (Split Stage + Live Audio DSP Pad demo).
+- **NO Sparkles / AI fluff icons:** Replaced with engineering-grade icons (`Sliders`, `Radio`, `Activity`, `Wrench`).
+- **NO Glassmorphism / `backdrop-blur-md`:** Solid opaque panel backgrounds (`bg-surface-1`).
+- **NO Universal drop shadows:** Tactile beveled borders (`border-b-2 active:translate-y-px`).
+- **NO Pure Black `#000000`:** Deep obsidian-flint base (`oklch(19% 0.018 220)`).
+- **Skeletons Added:** `TrackCardSkeleton` and `ProjectCardSkeleton` added for instant async feedback.
+- **Legal Compliance:** Footer with explicit Terms of Service and Privacy Policy links.
+
+---
+
+## 3. APK Inspection & Verification Results
 1. **APK Archive Structure:**
    - Package: `com.qwenton.bandlabs`
    - Size: 4.71 MB (`app-debug.apk`)
    - Native DEX files: `classes.dex` through `classes6.dex`
-   - Asset Manifest: `assets/capacitor.config.json`, `assets/native-bridge.js`, `assets/public/index.html`, and pre-rendered Next.js chunks (`4bd1b696`, `255`, `main-app`, `page-27eb2ac83a78c58d.js`).
+   - Asset Manifest: `assets/capacitor.config.json`, `assets/native-bridge.js`, `assets/public/index.html`, and pre-rendered Next.js chunks (`4bd1b696`, `255`, `main-app`, `page-*.js`).
 2. **Native Permissions:**
    - `android.permission.INTERNET`
    - `android.permission.RECORD_AUDIO` (verified: `BridgeWebChromeClient.java` triggers native runtime permission prompt when user arms or records).
    - `android.permission.MODIFY_AUDIO_SETTINGS`
    - `android.permission.READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE`
-3. **Runtime Web Inspection & Emulation:**
-   - Served static export on `http://localhost:3000` and attached DevTools on mobile viewport (390x844 Pixel 7 / Galaxy S21 emulation).
-   - **Landing Page:** Renders instantly in static HTML.
-   - **Auth Modal:** Sign In / Sign Up tabs switch cleanly. Guest mode bypasses cloud auth without blocking.
-   - **Dashboard Creation Hub:** Displays "+ Create New Project", Quick Launch tools, My Projects list, starter templates, and centered floating red "+" button.
-   - **Mobile Tracks View:** Vertical cards with volume and pan sliders replace cramped desktop timelines.
-   - **Switcher:** 1-tap toggling between mobile Tracks view and horizontal multitrack Timeline view.
-   - **Console Errors:** ZERO runtime JavaScript exceptions.
+3. **Automated Verification:**
+   - Unit tests: 11/11 passed (`npm test`).
+   - Next.js static build: Succeeded (`npm run build`).
+   - Capacitor Android Sync: Succeeded (`npx cap sync android`).
+   - Local Gradle APK build: Succeeded (`gradlew assembleDebug` in 42s).
 
 ---
 
-## 3. Current Progress
-- Next.js Web Studio & Audio DSP: **Verified (11/11 automated tests passed).**
-- Multi-Screen Mobile Flow: **Complete & Verified via Headless DevTools.**
-- Android Debug APK: **Compiled Locally & Published on GitHub Releases (v1.0.3).**
-- Cloud CI/CD: **GitHub Actions run `42476175712` completed with status `success`.**
-
----
-
-## 4. Pending Work & Next Steps
-- Verify user feedback on physical Android phone installation.
-- Add PWA install manifest if browser standalone launch is desired alongside APK.
-- Add sample audio stems to starter templates for instant preview.
+## 4. Current Status
+- Next.js Web Studio & Audio DSP: **Verified (11/11 tests passing).**
+- Multi-Screen Mobile Flow: **Complete & Verified.**
+- Gunmetal & Signal Mint Redesign: **Complete (Zero AI Slop & Zero Gradients).**
+- Android Debug APK: **Compiled Locally (4.71 MB) & Ready for GitHub Release v1.0.5.**
