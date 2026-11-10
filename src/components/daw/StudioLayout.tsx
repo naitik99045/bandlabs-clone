@@ -7,6 +7,9 @@ import { TracksMobileView } from "./TracksMobileView";
 import { VocalSuiteModal } from "./VocalSuiteModal";
 import { BeatMakerModal } from "./BeatMakerModal";
 import { MasteringModal } from "@/components/tools/MasteringModal";
+import { TunerModal } from "@/components/tools/TunerModal";
+import { MetronomeModal } from "@/components/tools/MetronomeModal";
+import { SongStarterModal } from "@/components/tools/SongStarterModal";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { Shield, Cpu, Activity } from "lucide-react";
@@ -124,6 +127,9 @@ function StudioCore() {
       <VocalSuiteModal />
       <BeatMakerModal />
       <MasteringModal />
+      <TunerModal />
+      <MetronomeModal />
+      <SongStarterModal />
       <UserSettingsModal />
     </div>
   );

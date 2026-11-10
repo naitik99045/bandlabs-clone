@@ -23,6 +23,9 @@ import { CreateTrackSheet } from "./CreateTrackSheet";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { MasteringModal } from "@/components/tools/MasteringModal";
+import { TunerModal } from "@/components/tools/TunerModal";
+import { MetronomeModal } from "@/components/tools/MetronomeModal";
+import { SongStarterModal } from "@/components/tools/SongStarterModal";
 
 export function DashboardView() {
   const { 
@@ -417,6 +420,9 @@ export function DashboardView() {
       <UserSettingsModal />
       <AuthModal />
       <MasteringModal />
+      <TunerModal />
+      <MetronomeModal />
+      <SongStarterModal />
     </div>
   );
 }

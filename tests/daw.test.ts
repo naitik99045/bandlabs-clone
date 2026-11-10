@@ -6,6 +6,7 @@ import { METRONOME_PRESETS, MetronomeSound } from "../src/lib/audio/AudioEngine"
 import { BANDLAB_VOCAL_PRESETS } from "../src/lib/audio/presets/vocalPresets";
 import { calculatePitchOffset } from "../src/lib/audio/dsp/EffectsRack";
 import { BANDLAB_MASTERING_PROFILES } from "../src/lib/audio/dsp/MasteringRack";
+import { detectPitch, INSTRUMENT_TUNINGS } from "../src/lib/audio/dsp/PitchDetector";
 
 describe("BandLab Clone Test Suite", () => {
   // 1. LOGIN & AUTHENTICATION TESTS
@@ -305,6 +306,62 @@ describe("BandLab Clone Test Suite", () => {
         // Stereo width factor should be >= 1.0
         assert.ok(profile.stereoWidth >= 1.0, `Profile ${profile.id} stereo width < 1.0`);
       });
+    });
+  });
+
+  // 8. STANDALONE CREATOR TOOLS (TUNER, METRONOME & SONGSTARTER)
+  describe("Standalone Creator Tools (Tuner, Metronome & SongStarter)", () => {
+    test("Instrument tunings should include essential guitar, bass, ukulele and violin standards", () => {
+      assert.ok(INSTRUMENT_TUNINGS.length >= 5);
+      const expectedIds = ["chromatic", "guitar_standard", "bass_standard", "ukulele_c", "violin_standard"];
+      expectedIds.forEach((id) => {
+        const tuning = INSTRUMENT_TUNINGS.find((t) => t.id === id);
+        assert.ok(tuning, `Missing instrument tuning: ${id}`);
+        assert.ok(tuning.name.length > 0);
+      });
+    });
+
+    test("Pitch detection autocorrelation should accurately detect 440 Hz standard A4 note", () => {
+      const sampleRate = 44100;
+      const freq = 440.0; // A4
+      const buffer = new Float32Array(2048);
+      for (let i = 0; i < buffer.length; i++) {
+        buffer[i] = Math.sin((2 * Math.PI * freq * i) / sampleRate) * 0.7;
+      }
+
+      const note = detectPitch(buffer, sampleRate, 440);
+      assert.ok(note !== null, "Pitch detection failed to detect note");
+      assert.equal(note.note, "A");
+      assert.equal(note.octave, 4);
+      assert.ok(Math.abs(note.cents) <= 2, `Cents deviation too high: ${note.cents}`);
+      assert.equal(note.inTune, true);
+    });
+
+    test("Pitch detection autocorrelation should accurately detect 261.63 Hz Middle C (C4)", () => {
+      const sampleRate = 44100;
+      const freq = 261.63; // C4
+      const buffer = new Float32Array(2048);
+      for (let i = 0; i < buffer.length; i++) {
+        buffer[i] = Math.sin((2 * Math.PI * freq * i) / sampleRate) * 0.7;
+      }
+
+      const note = detectPitch(buffer, sampleRate, 440);
+      assert.ok(note !== null, "Pitch detection failed to detect Middle C");
+      assert.equal(note.note, "C");
+      assert.equal(note.octave, 4);
+      assert.ok(Math.abs(note.cents) <= 3, `Cents deviation too high: ${note.cents}`);
+    });
+
+    test("Silent or low-noise buffers should return null pitch to prevent jitter", () => {
+      const sampleRate = 44100;
+      const silentBuffer = new Float32Array(2048); // All zeros
+      assert.equal(detectPitch(silentBuffer, sampleRate, 440), null);
+
+      const noiseBuffer = new Float32Array(2048);
+      for (let i = 0; i < noiseBuffer.length; i++) {
+        noiseBuffer[i] = (Math.random() - 0.5) * 0.005; // RMS < 0.015 threshold
+      }
+      assert.equal(detectPitch(noiseBuffer, sampleRate, 440), null);
     });
   });
 });

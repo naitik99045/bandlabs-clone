@@ -35,13 +35,13 @@
   - *Action:* Created `src/lib/audio/dsp/MasteringRack.ts` and `src/components/tools/MasteringModal.tsx` replicating BandLab's official mastering suite. Implemented 8 profiles: *Universal*, *Clarity*, *Fire*, *Tape*, *Natural*, *Spatial*, *Punch*, and *Cinematic*. Includes real-time A/B bypass switch, Low/High EQ trims, intensity slider, timeline scrubbing, and instant mixdown mastering export.
   - *Target Files:* `src/lib/audio/dsp/MasteringRack.ts`, `src/components/tools/MasteringModal.tsx`, `src/stores/useStudioStore.ts`, `src/components/dashboard/DashboardView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `tests/daw.test.ts`
   - *Done When:* User can audition master tracks with all 8 profiles in real time, toggle A/B comparison, and export mastered audio. Verified with 18/18 passing tests and clean Android APK build.
-- [ ] **Task 3.4: Standalone Creator Tools Suite (Tuner, Metronome & SongStarter)**
-  - *Action:* Implement standalone creator tools matching BandLab's `com.bandlab.tools`:
-    1. **Chromatic Tuner (`TunerModal.tsx`):** Web Audio pitch autocorrelation detecting fundamental frequency (Hz), note name (e.g., A4), and visual cents offset needle.
-    2. **Pro Metronome (`MetronomeModal.tsx`):** Fullscreen metronome with visual pendulum pulse, tap-tempo button, time signatures (4/4, 3/4, 6/8), and BandLab sound picker.
-    3. **AI SongStarter (`SongStarterModal.tsx`):** Instant beat/melody generator for Trap, Hip Hop, Pop, R&B, and Lo-Fi that loads chords and drum loops directly into the DAW.
-  - *Target Files:* `src/components/tools/TunerModal.tsx`, `src/components/tools/MetronomeModal.tsx`, `src/components/tools/SongStarterModal.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`
-  - *Done When:* All three standalone tools can be launched from the Create (+) Sheet and work accurately with Web Audio.
+- [x] **Task 3.4: Standalone Creator Tools Suite (Tuner, Metronome & SongStarter)**
+  - *Action:* Implemented standalone creator tools matching BandLab's `com.bandlab.tools`:
+    1. **Chromatic Tuner (`TunerModal.tsx` & `PitchDetector.ts`):** Web Audio pitch autocorrelation detecting fundamental frequency (Hz), note name (e.g., A4), and visual cents offset needle (±3¢ in-tune Signal Mint zone) across Chromatic, Guitar, Bass, Ukulele, and Violin presets with reference tone playback.
+    2. **Pro Metronome (`MetronomeModal.tsx`):** Fullscreen metronome with visual pendulum pulse, tap-tempo button, time signatures (2/4 to 7/8), subdivisions (1/4 to 1/16), and BandLab sound picker with 4 authentic APK sample profiles.
+    3. **AI SongStarter (`SongStarterModal.tsx`):** Beat & melody inspiration generator for Trap, Hip Hop, Pop, R&B, Lo-Fi, and UK Drill that generates chord voicings, key, BPM, and drum matrix grooves with 1-click studio DAW seeding.
+  - *Target Files:* `src/lib/audio/dsp/PitchDetector.ts`, `src/components/tools/TunerModal.tsx`, `src/components/tools/MetronomeModal.tsx`, `src/components/tools/SongStarterModal.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/daw/StudioLayout.tsx`, `tests/daw.test.ts`
+  - *Done When:* All three standalone tools can be launched from the Create (+) Sheet and Studio, backed by 22/22 passing automated tests and clean Android APK build.
 - [ ] **Task 3.5: 5-Tab Mobile Navigation Shell (`NavigationActivity`)**
   - *Action:* Build BandLab's authentic bottom navigation bar in `src/components/navigation/BottomTabBar.tsx`: **Feed** (community tracks & waveform player), **Explore** (trending genres & sound packs), **Create (+)** (pulsing red studio launcher), **Library** (my projects & templates), and **Profile** (user stats & settings).
   - *Target Files:* `src/components/navigation/BottomTabBar.tsx`, `src/app/page.tsx`, `src/stores/useStudioStore.ts`

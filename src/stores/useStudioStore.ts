@@ -142,7 +142,7 @@ interface StudioState {
   vocalSettings: VocalPreferences;
   masteringSettings: MasteringSettings;
   selectedTrackId: string | null;
-  activeModal: "vocal" | "beatmaker" | "mastering" | "export" | "settings" | null;
+  activeModal: "vocal" | "beatmaker" | "mastering" | "tuner" | "metronome" | "songstarter" | "export" | "settings" | null;
 
   // Transport & Engine Actions
   setIsPlaying: (isPlaying: boolean) => void;
@@ -154,7 +154,7 @@ interface StudioState {
   setMetronomeSound: (sound: MetronomeSound) => void;
   setMasterVolume: (volume: number) => void;
   setSelectedTrackId: (id: string | null) => void;
-  setActiveModal: (modal: "vocal" | "beatmaker" | "mastering" | "export" | "settings" | null) => void;
+  setActiveModal: (modal: "vocal" | "beatmaker" | "mastering" | "tuner" | "metronome" | "songstarter" | "export" | "settings" | null) => void;
   updateMasteringSettings: (settings: Partial<MasteringSettings>) => void;
 
   // Track Actions
