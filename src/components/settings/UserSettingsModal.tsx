@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Settings, Cloud, Check, LogOut, User, Shield, FileText } from "lucide-react";
+import { X, Settings, Cloud, Check, LogOut, User, Shield, FileText, Volume2 } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { useAuth } from "@/context/AuthContext";
+import { audioEngine, MetronomeSound, METRONOME_PRESETS } from "@/lib/audio/AudioEngine";
 
 export function UserSettingsModal() {
-  const { activeModal, setActiveModal, bpm, key } = useStudioStore();
+  const { activeModal, setActiveModal, bpm, key, metronomeSound, setMetronomeSound } = useStudioStore();
   const { user, guestId, settings, updateSettings, logout, loginWithGoogle } = useAuth();
 
   const [activeTab, setActiveTab] = useState<"preferences" | "legal">("preferences");
@@ -202,6 +203,47 @@ export function UserSettingsModal() {
                   >
                     WAV (24-bit Lossless)
                   </button>
+                </div>
+              </div>
+
+              {/* BandLab Metronome Sound Profile */}
+              <div className="bg-surface-1 p-3.5 rounded-sm border border-surface-border space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-steel block uppercase">
+                    Metronome Click Sound (from BandLab Mobile)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      audioEngine.init();
+                      audioEngine.playMetronomeClick(true);
+                    }}
+                    className="flex items-center gap-1 text-[10px] font-mono text-brand hover:text-brand-hover"
+                  >
+                    <Volume2 className="w-3 h-3" />
+                    <span>Audition</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                  {METRONOME_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => {
+                        setMetronomeSound(preset.id);
+                        audioEngine.init();
+                        audioEngine.playMetronomeClick(true, 0, preset.id);
+                      }}
+                      className={`p-2 rounded-sm border text-center transition ${
+                        metronomeSound === preset.id
+                          ? "bg-surface-2 border-brand text-brand font-bold"
+                          : "border-surface-border text-slateMuted hover:text-chalk"
+                      }`}
+                    >
+                      {preset.name}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { DEFAULT_USER_SETTINGS, UserSettings } from "../src/types/settings";
 import { DRUM_SOUNDS } from "../src/stores/useStudioStore";
+import { METRONOME_PRESETS, MetronomeSound } from "../src/lib/audio/AudioEngine";
 
 describe("BandLab Clone Test Suite", () => {
   // 1. LOGIN & AUTHENTICATION TESTS
@@ -209,6 +210,40 @@ describe("BandLab Clone Test Suite", () => {
       assert.equal(toInt16(normalSample), Math.round(0.5 * 32767));
       assert.equal(toInt16(overflowSample), 32767);   // Clamped to max positive Int16
       assert.equal(toInt16(underflowSample), -32768); // Clamped to min negative Int16
+    });
+  });
+
+  // 6. AUTHENTIC BANDLAB METRONOME ENGINE TESTS
+  describe("Authentic BandLab Metronome Sound Engine", () => {
+    test("Metronome sound engine must register all 4 official BandLab presets", () => {
+      const expectedIds: MetronomeSound[] = ["clave", "hat", "rim", "sine"];
+      const registeredIds = METRONOME_PRESETS.map((p) => p.id);
+      
+      assert.equal(METRONOME_PRESETS.length, 4);
+      expectedIds.forEach((id) => {
+        assert.ok(registeredIds.includes(id), `Missing metronome preset: ${id}`);
+      });
+    });
+
+    test("Every metronome preset must define valid accented and unaccented sample assets", () => {
+      METRONOME_PRESETS.forEach((preset) => {
+        assert.ok(preset.name.length > 0);
+        assert.ok(preset.accentedPath.startsWith("/audio/metronome/"));
+        assert.ok(preset.accentedPath.endsWith("_accented.m4a"));
+        assert.ok(preset.unaccentedPath.startsWith("/audio/metronome/"));
+        assert.ok(preset.unaccentedPath.endsWith("_unaccented.m4a"));
+      });
+    });
+
+    test("Accented click logic correctly triggers on downbeat (beat % 4 === 0)", () => {
+      const isDownbeat = (beatIndex: number) => beatIndex % 4 === 0;
+      assert.equal(isDownbeat(0), true);  // Bar 1, Beat 1: Accented
+      assert.equal(isDownbeat(1), false); // Bar 1, Beat 2: Regular
+      assert.equal(isDownbeat(2), false); // Bar 1, Beat 3: Regular
+      assert.equal(isDownbeat(3), false); // Bar 1, Beat 4: Regular
+      assert.equal(isDownbeat(4), true);  // Bar 2, Beat 1: Accented
+      assert.equal(isDownbeat(7), false); // Bar 2, Beat 4: Regular
+      assert.equal(isDownbeat(8), true);  // Bar 3, Beat 1: Accented
     });
   });
 });

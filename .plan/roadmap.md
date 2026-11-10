@@ -22,52 +22,45 @@
   - *Target Files:* `src/lib/firebase/config.ts`, `src/context/AuthContext.tsx`, `src/components/settings/UserSettingsModal.tsx`
   - *Done When:* User can authenticate seamlessly via Google or Guest; user UID links automatically to Supabase `user_settings`.
 
-## Phase 3: Core Feature Modules (Iterative Build)
-- [x] **Task 3.1: Web Audio Engine Core & Studio State Store**
-  - *Action:* Built the core audio engine using Web Audio API: master `AudioContext` singleton, high-precision clock scheduler (BPM, metronome click generator, playhead tracking), and Zustand store (`useStudioStore`) managing tracks, playhead state, zoom, and active selections.
-  - *Target Files:* `src/lib/audio/AudioEngine.ts`, `src/stores/useStudioStore.ts`
-  - *Done When:* Audio engine boots on user gesture, metronome clicks accurately in time with adjustable BPM, and playhead position syncs smoothly at 60fps.
-- [x] **Task 3.2: Vocal Recording, Mic Monitoring & Instrumental Beat Import**
-  - *Action:* Implemented microphone audio capture readiness and drag-and-drop import of instrumental backing beats (MP3/WAV) onto dedicated tracks with automated waveform peak extraction and visualization.
-  - *Target Files:* `src/components/daw/TrackLane.tsx`, `src/components/daw/TimelineView.tsx`, `src/lib/audio/AudioEngine.ts`
-  - *Done When:* User can drop in a backing beat and record live vocals over it with instant waveform feedback and playback synchronization.
-- [x] **Task 3.3: True Sound Modulations & Real-Time Pitch Shifter (AutoPitch DSP)**
-  - *Action:* Upgraded `src/lib/audio/dsp/EffectsRack.ts` and created `PitchShifterNode.ts` and `ModulationNode.ts` with real-time granular pitch shifting, LFO-driven chorus/vibrato modulation (depth & rate), and analog tube saturation. Connected AutoPitch scale, root key, and correction speed knobs directly to the audio processing graph.
-  - *Target Files:* `src/lib/audio/dsp/EffectsRack.ts`, `src/lib/audio/dsp/PitchShifterNode.ts`, `src/lib/audio/dsp/ModulationNode.ts`, `src/components/daw/VocalSuiteModal.tsx`
-  - *Done When:* Audio shifts pitch to the selected musical key in real time, and chorus/vibrato modulations are audible during playback and recording.
-- [x] **Task 3.4: Live Microphone Capture & Take Placer**
-  - *Action:* Built `src/lib/audio/MicRecorder.ts` with `navigator.mediaDevices.getUserMedia` and `MediaRecorder`. Connected the Transport bar `REC` button to capture vocal takes with live VU level monitoring, automatically decoding takes into waveform `AudioClip`s on the armed vocal track.
-  - *Target Files:* `src/lib/audio/MicRecorder.ts`, `src/components/daw/TransportBar.tsx`
-  - *Done When:* User can record their live voice from mic/headset, see it populate as a clip on the vocal track, and play it back with all vocal FX applied.
-- [x] **Task 3.5: 16-Step Beat Maker & Drum Machine**
-  - *Action:* Created a 16-step grid drum sequencer module supporting 8 channels (Kick, Snare, Clap, Closed Hat, Open Hat, 808 Bass, Perc, Crash). Included synthesized drum sound engine, step velocity, and real-time loop preview.
-  - *Target Files:* `src/components/daw/BeatMakerModal.tsx`, `src/lib/audio/AudioEngine.ts`, `src/stores/useStudioStore.ts`
-  - *Done When:* User can program drum patterns on the 16-step grid, audition sounds, and loop them seamlessly in sync with the master project BPM.
-- [x] **Task 3.6: "Download / Install Music" Mixdown Engine**
-  - *Action:* Implemented client-side `OfflineAudioContext` multi-track render engine. When user clicks "Download Music", it gathers all active vocal additions (with AutoPitch and FX applied), imported beats, and drum patterns, renders the final mixdown faster-than-realtime, and encodes to 320kbps MP3 or 24-bit WAV using `@breezystack/lamejs`. Triggers instant browser file download.
-  - *Target Files:* `src/lib/audio/MixdownExporter.ts`, `src/lib/audio/WavEncoder.ts`, `src/components/daw/TransportBar.tsx`
-  - *Done When:* User can click "Download Music" and instantly receive the fully rendered audio file containing all their vocal additions, beat customizations, and effect preferences baked in.
+## Phase 3: Core Feature Modules (Reverse-Engineered BandLab Exact Replica)
+- [x] **Task 3.1: Wire Authentic BandLab Metronome Sound Engine**
+  - *Action:* Connect the 8 extracted BandLab audio files (`public/audio/metronome/clave_*.m4a`, `hat_*.m4a`, `rim_*.m4a`, `sineburst_*.m4a`) into `AudioEngine.ts`. Implement sound preset switcher (Clave, Hi-Hat, Rimshot, Sine Burst) with high/low accented clicks and zero playback latency.
+  - *Target Files:* `src/lib/audio/AudioEngine.ts`, `src/stores/useStudioStore.ts`, `src/components/daw/TransportBar.tsx`, `src/components/settings/UserSettingsModal.tsx`, `tests/daw.test.ts`
+  - *Done When:* Metronome plays authentic BandLab sound samples with seamless looping, audio buffer caching, and 14/14 automated tests passing.
+- [ ] **Task 3.2: Expand AutoPitch to 24 Authentic BandLab Vocal FX Presets**
+  - *Action:* Upgrade `EffectsRack.ts` and `VocalSuiteModal.tsx` with all 24 presets discovered in `com.bandlab.bandlab`: *Classic*, *Modern Rap*, *Amped*, *Robot*, *Big Harmony*, *Bitz*, *Chip*, *Drone*, *Duet*, *Futurescape*, *Gorgon*, *Halo*, *Hyper*, *Krafty*, *Natural*, *Ocean*, *Phone*, *Simulacrum*, *Stone*, *Third*, *Ultrashift*, *Voice Cleaner*, *De-Reverb*, *Noise Gate*. Configure specific DSP parameters (pitch quantization speed, formant shift, distortion, chorus delay, filter cutoff).
+  - *Target Files:* `src/lib/audio/dsp/EffectsRack.ts`, `src/components/daw/VocalSuiteModal.tsx`
+  - *Done When:* All 24 presets appear in the vocal modal with real-time audio routing and audible DSP differentiation.
+- [ ] **Task 3.3: BandLab 8-Profile AI Mastering Suite (`MasteringActivity`)**
+  - *Action:* Create `src/lib/audio/dsp/MasteringRack.ts` and `src/components/tools/MasteringModal.tsx` replicating BandLab's official mastering suite. Implement 8 profiles: *Universal*, *Clarity*, *Fire*, *Tape*, *Natural*, *Spatial*, *Punch*, and *Cinematic*. Include real-time A/B bypass switch, Low/High EQ trims, and instant mixdown mastering export.
+  - *Target Files:* `src/lib/audio/dsp/MasteringRack.ts`, `src/components/tools/MasteringModal.tsx`, `src/stores/useStudioStore.ts`
+  - *Done When:* User can audition master tracks with all 8 profiles in real time, toggle A/B comparison, and export mastered audio.
+- [ ] **Task 3.4: Standalone Creator Tools Suite (Tuner, Metronome & SongStarter)**
+  - *Action:* Implement standalone creator tools matching BandLab's `com.bandlab.tools`:
+    1. **Chromatic Tuner (`TunerModal.tsx`):** Web Audio pitch autocorrelation detecting fundamental frequency (Hz), note name (e.g., A4), and visual cents offset needle.
+    2. **Pro Metronome (`MetronomeModal.tsx`):** Fullscreen metronome with visual pendulum pulse, tap-tempo button, time signatures (4/4, 3/4, 6/8), and BandLab sound picker.
+    3. **AI SongStarter (`SongStarterModal.tsx`):** Instant beat/melody generator for Trap, Hip Hop, Pop, R&B, and Lo-Fi that loads chords and drum loops directly into the DAW.
+  - *Target Files:* `src/components/tools/TunerModal.tsx`, `src/components/tools/MetronomeModal.tsx`, `src/components/tools/SongStarterModal.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`
+  - *Done When:* All three standalone tools can be launched from the Create (+) Sheet and work accurately with Web Audio.
+- [ ] **Task 3.5: 5-Tab Mobile Navigation Shell (`NavigationActivity`)**
+  - *Action:* Build BandLab's authentic bottom navigation bar in `src/components/navigation/BottomTabBar.tsx`: **Feed** (community tracks & waveform player), **Explore** (trending genres & sound packs), **Create (+)** (pulsing red studio launcher), **Library** (my projects & templates), and **Profile** (user stats & settings).
+  - *Target Files:* `src/components/navigation/BottomTabBar.tsx`, `src/app/page.tsx`, `src/stores/useStudioStore.ts`
+  - *Done When:* Mobile shell seamlessly switches between the 5 tabs, keeping the DAW accessible in 1 tap from the center Create button.
 
-## Phase 4: UI Polish, Error Recovery & Android Stability
+## Phase 4: UI Polish, Edge Cases & Android Stability
 - [x] **Task 4.1: `qwenton-ui` Redesign & Zero AI Slop Implementation**
-  - *Action:* Converted all DAW styling to solid 60-30-10 OKLCH tokens (`globals.css`, `tailwind.config.ts`), removed all gradients, eliminated neon glows, applied monospace numbers, added track skeleton loaders, and included Terms of Service / Privacy Policy links.
-  - *Target Files:* `src/styles/globals.css`, `tailwind.config.ts`, `src/components/daw/TrackLane.tsx`, `src/components/daw/TimelineView.tsx`, `src/components/daw/VocalSuiteModal.tsx`, `src/components/daw/BeatMakerModal.tsx`, `src/components/settings/UserSettingsModal.tsx`
+  - *Action:* Converted all DAW styling to solid 60-30-10 OKLCH tokens (`globals.css`), removed all gradients, eliminated neon glows, applied monospace numbers, added track skeleton loaders, and included Terms of Service / Privacy Policy links.
   - *Done When:* DAW has authentic studio hardware aesthetics with strictly zero gradients and 11 passing automated tests.
 - [x] **Task 4.2: Android Client-Side Exception Fix & Studio Recovery Guard**
   - *Action:* Fixed `auth/invalid-api-key` crash on Android WebView startup by making Firebase initialization crash-proof with fallback to offline guest session. Added top-level React `ErrorBoundary` and protected `localStorage` calls with safe storage wrappers.
-  - *Target Files:* `src/lib/firebase/config.ts`, `src/lib/supabase/client.ts`, `src/lib/supabase/settingsService.ts`, `src/context/AuthContext.tsx`, `src/components/common/ErrorBoundary.tsx`, `src/app/page.tsx`
   - *Done When:* APK launches into DAW workspace on Android devices without throwing client-side exception or showing black error screen.
-- [x] **Task 4.3: BandLab 1-to-1 Multi-Screen Mobile Flow & Studio Verification**
-  - *Action:* Built authentic 4-screen BandLab mobile architecture: (1) Landing View with hero & direct access; (2) Authentication Modal with Email/Password + Google + Guest; (3) Dashboard creation hub with "+ Create New Project", Quick Launch tools, starter templates (Trap, Pop, Drill), project library, and bottom navigation with central red "+" button; (4) Mobile-first Studio with vertical track cards (`TracksMobileView`), touch faders, pan, rec arm, waveform clips, and Timeline view switcher.
-  - *Target Files:* `src/stores/useStudioStore.ts`, `src/components/landing/LandingView.tsx`, `src/components/auth/AuthModal.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/daw/TracksMobileView.tsx`, `src/components/daw/StudioLayout.tsx`, `src/components/daw/TransportBar.tsx`, `src/app/page.tsx`
-  - *Done When:* Complete end-to-end user navigation flow is verified on mobile emulation, all 11 automated unit/DSP tests pass, Next.js static build succeeds with zero errors, and native APK is compiled locally and published to GitHub Releases (v1.0.3).
-- [x] **Task 4.4: Gunmetal Flint & Signal Mint 60-30-10 Redesign (Anti-Slop Strict Pass)**
-  - *Action:* Replaced orange/black color combo with Cold Gunmetal Flint (`oklch(19% 0.018 220)`), Panel Slate (`oklch(24% 0.022 220)`), and Signal Mint (`oklch(78% 0.16 168)`). Removed all primary colors (pure red, blue, yellow) and all gradients. Eliminated 3-card rows, glassmorphism blur, decorative sparkles, and universal drop shadows. Built Blueprint B interactive Web Audio live synth demo pad on Landing split stage.
-  - *Target Files:* `src/styles/globals.css`, `src/components/landing/LandingView.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/daw/TransportBar.tsx`, `src/components/daw/TracksMobileView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/auth/AuthModal.tsx`, `src/components/daw/VocalSuiteModal.tsx`, `src/components/daw/BeatMakerModal.tsx`, `src/components/settings/UserSettingsModal.tsx`, `src/stores/useStudioStore.ts`
-  - *Done When:* 11/11 tests pass, Next.js static export succeeds, Android APK is built cleanly.
+- [ ] **Task 4.3: Multi-Take Vocal Recording & Comping System (`About Takes`)**
+  - *Action:* Implement multi-take recording on vocal tracks. When recording over an existing clip, save as Take 2, Take 3, etc., allowing the user to audition takes, swipe between takes, and comp the best vocal performance.
+  - *Target Files:* `src/lib/audio/MicRecorder.ts`, `src/components/daw/TracksMobileView.tsx`, `src/stores/useStudioStore.ts`
+  - *Done When:* Consecutive vocal recordings on the same track lane generate selectable takes without overwriting previous takes.
 
 ## Phase 5: Cloud Compilation & Release
-- [x] **Task 5.1: Push Fixes, Tag v1.0.5 & Publish Release**
-  - *Action:* Commit changes to git, tag as `v1.0.5`, push to GitHub, and verify GitHub Actions builds and publishes the new APK release.
+- [ ] **Task 5.1: Build, Test, Sync & Publish Release v1.1.0**
+  - *Action:* Run full test suite (`npm test`), build static export (`npm run build`), sync Capacitor Android (`npx cap sync android`), compile APK locally (`gradlew assembleDebug`), push tag `v1.1.0` to GitHub, and verify GitHub Actions publishes the release APK.
   - *Target Files:* `.github/workflows/build-and-release.yml`
-  - *Done When:* GitHub Release v1.0.5 is live with downloadable `app-debug.apk`.
+  - *Done When:* GitHub Release v1.1.0 is published with downloadable `app-debug.apk`.

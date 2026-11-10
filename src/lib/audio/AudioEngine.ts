@@ -1,11 +1,50 @@
 // Master Web Audio Engine Singleton for BandLab Clone
 
+export type MetronomeSound = "clave" | "hat" | "rim" | "sine";
+
+export interface MetronomeSampleConfig {
+  id: MetronomeSound;
+  name: string;
+  accentedPath: string;
+  unaccentedPath: string;
+}
+
+export const METRONOME_PRESETS: MetronomeSampleConfig[] = [
+  {
+    id: "clave",
+    name: "Latin Clave",
+    accentedPath: "/audio/metronome/clave_accented.m4a",
+    unaccentedPath: "/audio/metronome/clave_unaccented.m4a",
+  },
+  {
+    id: "hat",
+    name: "Studio Hi-Hat",
+    accentedPath: "/audio/metronome/hat_accented.m4a",
+    unaccentedPath: "/audio/metronome/hat_unaccented.m4a",
+  },
+  {
+    id: "rim",
+    name: "Wood Rimshot",
+    accentedPath: "/audio/metronome/rim_accented.m4a",
+    unaccentedPath: "/audio/metronome/rim_unaccented.m4a",
+  },
+  {
+    id: "sine",
+    name: "Sine Burst",
+    accentedPath: "/audio/metronome/sineburst_accented.m4a",
+    unaccentedPath: "/audio/metronome/sineburst_unaccented.m4a",
+  },
+];
+
 class AudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private analyser: AnalyserNode | null = null;
   private metronomeTimer: number | null = null;
   private playheadInterval: number | null = null;
+  private metronomeBuffers: Map<string, AudioBuffer> = new Map();
+  private metronomeSound: MetronomeSound = "clave";
+  private isPreloadingMetronome: boolean = false;
 
   public isInitialized = false;
 
@@ -197,23 +236,85 @@ class AudioEngine {
     }
   }
 
-  // Play high/low woodblock click for metronome
-  public playMetronomeClick(isHigh: boolean = false) {
+  public setMetronomeSound(sound: MetronomeSound) {
+    this.metronomeSound = sound;
+    this.preloadMetronomeSamples().catch(() => {});
+  }
+
+  public getMetronomeSound(): MetronomeSound {
+    return this.metronomeSound;
+  }
+
+  public async preloadMetronomeSamples(): Promise<void> {
+    if (typeof window === "undefined" || this.isPreloadingMetronome) return;
+    this.isPreloadingMetronome = true;
+    try {
+      this.init();
+      const ctx = this.getContext();
+      if (!ctx) return;
+
+      const promises = METRONOME_PRESETS.flatMap((preset) => [
+        this.loadMetronomeSample(preset.accentedPath, `${preset.id}_accented`),
+        this.loadMetronomeSample(preset.unaccentedPath, `${preset.id}_unaccented`),
+      ]);
+      await Promise.allSettled(promises);
+    } finally {
+      this.isPreloadingMetronome = false;
+    }
+  }
+
+  private async loadMetronomeSample(url: string, key: string): Promise<void> {
+    if (this.metronomeBuffers.has(key)) return;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const arrayBuffer = await res.arrayBuffer();
+      const ctx = this.getContext();
+      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+      this.metronomeBuffers.set(key, audioBuffer);
+    } catch {
+      // Fallback silently if fetch or decode is unavailable
+    }
+  }
+
+  // Play high/low accented click for metronome using authentic BandLab samples
+  public playMetronomeClick(isHigh: boolean = false, time: number = 0, soundOverride?: MetronomeSound) {
     const ctx = this.getContext();
+    const soundType = soundOverride || this.metronomeSound;
+    const sampleKey = `${soundType}_${isHigh ? "accented" : "unaccented"}`;
+    const cachedBuffer = this.metronomeBuffers.get(sampleKey);
+    const clickTime = time > 0 ? time : ctx.currentTime;
+
+    if (cachedBuffer) {
+      try {
+        const source = ctx.createBufferSource();
+        source.buffer = cachedBuffer;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(isHigh ? 0.95 : 0.75, clickTime);
+        source.connect(gain);
+        gain.connect(this.masterGain || ctx.destination);
+        source.start(clickTime);
+        return;
+      } catch {
+        // In case of BufferSource failure, fallback to synthesized oscillator
+      }
+    }
+
+    // High precision fallback synthesizer if sample is loading or offline
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(isHigh ? 1200 : 800, ctx.currentTime);
+    osc.type = soundType === "sine" ? "sine" : "triangle";
+    osc.frequency.setValueAtTime(isHigh ? 1320 : 880, clickTime);
 
-    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+    gain.gain.setValueAtTime(isHigh ? 0.35 : 0.2, clickTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, clickTime + 0.035);
 
     osc.connect(gain);
-    gain.connect(this.masterGain!);
+    gain.connect(this.masterGain || ctx.destination);
 
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.05);
+    osc.start(clickTime);
+    osc.stop(clickTime + 0.04);
   }
 
   // Decode audio file (MP3/WAV/OGG) from ArrayBuffer

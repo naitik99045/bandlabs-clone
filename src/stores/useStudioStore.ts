@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { VocalPreferences } from "@/types/settings";
+import { audioEngine, MetronomeSound } from "@/lib/audio/AudioEngine";
 
 export interface AudioClip {
   id: string;
@@ -125,6 +126,7 @@ interface StudioState {
   bpm: number;
   key: string;
   isMetronomeOn: boolean;
+  metronomeSound: MetronomeSound;
   masterVolume: number;
   tracks: StudioTrack[];
   drumMatrix: DrumMatrix;
@@ -139,6 +141,7 @@ interface StudioState {
   setBpm: (bpm: number) => void;
   setKey: (key: string) => void;
   toggleMetronome: () => void;
+  setMetronomeSound: (sound: MetronomeSound) => void;
   setMasterVolume: (volume: number) => void;
   setSelectedTrackId: (id: string | null) => void;
   setActiveModal: (modal: "vocal" | "beatmaker" | "export" | "settings" | null) => void;
@@ -337,6 +340,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
   bpm: 120,
   key: "C Major",
   isMetronomeOn: true,
+  metronomeSound: "clave" as MetronomeSound,
   masterVolume: 0.85,
   drumMatrix: createDefaultTrapGrid(),
   selectedTrackId: "track-vocal-1",
@@ -399,7 +403,17 @@ export const useStudioStore = create<StudioState>((set, get) => ({
   setCurrentTime: (currentTime) => set({ currentTime: Math.max(0, currentTime) }),
   setBpm: (bpm) => set({ bpm: Math.min(240, Math.max(40, bpm)) }),
   setKey: (key) => set({ key }),
-  toggleMetronome: () => set((state) => ({ isMetronomeOn: !state.isMetronomeOn })),
+  toggleMetronome: () => {
+    const next = !get().isMetronomeOn;
+    if (next) {
+      audioEngine.preloadMetronomeSamples().catch(() => {});
+    }
+    set({ isMetronomeOn: next });
+  },
+  setMetronomeSound: (metronomeSound) => {
+    audioEngine.setMetronomeSound(metronomeSound);
+    set({ metronomeSound });
+  },
   setMasterVolume: (masterVolume) => set({ masterVolume: Math.min(1, Math.max(0, masterVolume)) }),
   setSelectedTrackId: (selectedTrackId) => set({ selectedTrackId }),
   setActiveModal: (activeModal) => set({ activeModal }),

@@ -17,7 +17,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
-import { audioEngine } from "@/lib/audio/AudioEngine";
+import { audioEngine, MetronomeSound } from "@/lib/audio/AudioEngine";
 import { exportMixdown, downloadFile } from "@/lib/audio/MixdownExporter";
 import { micRecorder } from "@/lib/audio/MicRecorder";
 import { useAuth } from "@/context/AuthContext";
@@ -30,6 +30,7 @@ export function TransportBar() {
     bpm,
     key,
     isMetronomeOn,
+    metronomeSound,
     tracks,
     drumMatrix,
     vocalSettings,
@@ -45,6 +46,7 @@ export function TransportBar() {
     setBpm,
     setKey,
     toggleMetronome,
+    setMetronomeSound,
     setActiveModal,
     addClipToTrack,
   } = useStudioStore();
@@ -58,6 +60,10 @@ export function TransportBar() {
 
   const playStartTimeRef = useRef<number>(0);
   const startOffsetRef = useRef<number>(0);
+
+  useEffect(() => {
+    audioEngine.preloadMetronomeSamples().catch(() => {});
+  }, []);
 
   useEffect(() => {
     let animId: number;
@@ -343,17 +349,31 @@ export function TransportBar() {
           </button>
         </div>
 
-        {/* Right: Metronome & BPM */}
-        <div className="flex items-center gap-1.5 font-mono text-[10px]">
+        {/* Right: Metronome, Sound Preset & BPM */}
+        <div className="flex items-center gap-1 font-mono text-[10px]">
           <button
             onClick={toggleMetronome}
-            className={`px-2 py-1 rounded-sm border transition ${
+            className={`px-1.5 py-1 rounded-sm border transition ${
               isMetronomeOn
                 ? "bg-surface-2 text-audio-cyan border-surface-strong font-bold"
                 : "bg-surface-0 text-slateMuted border-surface-border"
             }`}
+            title="Toggle Metronome"
           >
             METRO
+          </button>
+
+          <button
+            onClick={() => {
+              const sounds: MetronomeSound[] = ["clave", "hat", "rim", "sine"];
+              const nextIndex = (sounds.indexOf(metronomeSound) + 1) % sounds.length;
+              setMetronomeSound(sounds[nextIndex]);
+              audioEngine.playMetronomeClick(true, 0, sounds[nextIndex]);
+            }}
+            className="px-1.5 py-1 bg-surface-0 border border-surface-border rounded-sm text-steel hover:text-chalk uppercase font-bold"
+            title="Cycle Metronome Sound (Clave, Hi-Hat, Rimshot, Sine)"
+          >
+            {metronomeSound === "clave" ? "CLV" : metronomeSound === "hat" ? "HAT" : metronomeSound === "rim" ? "RIM" : "SIN"}
           </button>
 
           <div className="flex items-center gap-0.5 px-1.5 py-1 bg-surface-0 border border-surface-border rounded-sm text-steel">
@@ -496,18 +516,35 @@ export function TransportBar() {
             </select>
           </div>
 
-          {/* Metronome Click Toggle */}
-          <button
-            onClick={toggleMetronome}
-            className={`px-2 py-1.5 text-[10px] font-mono border transition ${
-              isMetronomeOn
-                ? "bg-surface-2 text-audio-cyan border-surface-strong"
-                : "bg-surface-0 text-slateMuted border-surface-border hover:text-steel"
-            }`}
-            title="Toggle Metronome"
-          >
-            METRO
-          </button>
+          {/* Metronome Click Toggle & Sound Selector */}
+          <div className="flex items-center border border-surface-border">
+            <button
+              onClick={toggleMetronome}
+              className={`px-2 py-1.5 text-[10px] font-mono transition ${
+                isMetronomeOn
+                  ? "bg-surface-2 text-audio-cyan font-bold"
+                  : "bg-surface-0 text-slateMuted hover:text-steel"
+              }`}
+              title="Toggle Metronome"
+            >
+              METRO
+            </button>
+            <select
+              value={metronomeSound}
+              onChange={(e) => {
+                const s = e.target.value as MetronomeSound;
+                setMetronomeSound(s);
+                audioEngine.playMetronomeClick(true, 0, s);
+              }}
+              className="bg-surface-0 border-l border-surface-border text-steel hover:text-chalk px-1 py-1.5 text-[10px] font-mono focus:outline-none cursor-pointer uppercase"
+              title="Authentic BandLab Metronome Sound"
+            >
+              <option value="clave" className="bg-surface-1">Clave</option>
+              <option value="hat" className="bg-surface-1">Hi-Hat</option>
+              <option value="rim" className="bg-surface-1">Rimshot</option>
+              <option value="sine" className="bg-surface-1">Sine</option>
+            </select>
+          </div>
         </div>
 
         {/* Right Drawer Tools & Primary CTA */}
