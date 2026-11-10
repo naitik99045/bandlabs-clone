@@ -22,6 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 import { CreateTrackSheet } from "./CreateTrackSheet";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { AuthModal } from "@/components/auth/AuthModal";
+import { MasteringModal } from "@/components/tools/MasteringModal";
 
 export function DashboardView() {
   const { 
@@ -151,7 +152,7 @@ export function DashboardView() {
             <span className="text-[10px] font-mono text-slateMuted">Tap to begin</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {/* Tool 1: Voice / Mic AutoPitch */}
             <button
               onClick={() => createNewProject("vocal")}
@@ -188,7 +189,25 @@ export function DashboardView() {
               </div>
             </button>
 
-            {/* Tool 3: Import Audio */}
+            {/* Tool 3: AI Mastering */}
+            <button
+              onClick={() => setActiveModal("mastering")}
+              className="p-4 bg-surface-1 hover:bg-surface-2 border border-surface-border hover:border-audio-play transition text-left space-y-2.5 group active:scale-95"
+            >
+              <div className="w-8 h-8 bg-surface-2 border border-surface-border text-audio-play flex items-center justify-center group-hover:border-audio-play transition">
+                <Activity className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-chalk block group-hover:text-audio-play transition">
+                  AI Mastering
+                </span>
+                <span className="text-[10px] text-slateMuted block mt-0.5">
+                  8 Pro Profiles
+                </span>
+              </div>
+            </button>
+
+            {/* Tool 4: Import Audio */}
             <button
               onClick={() => createNewProject("studio")}
               className="p-4 bg-surface-1 hover:bg-surface-2 border border-surface-border hover:border-audio-cyan transition text-left space-y-2.5 group active:scale-95"
@@ -206,7 +225,7 @@ export function DashboardView() {
               </div>
             </button>
 
-            {/* Tool 4: Full Studio Arranger */}
+            {/* Tool 5: Full Studio Arranger */}
             <button
               onClick={() => createNewProject("studio")}
               className="p-4 bg-surface-1 hover:bg-surface-2 border border-surface-border hover:border-steel transition text-left space-y-2.5 group active:scale-95"
@@ -397,6 +416,7 @@ export function DashboardView() {
       <CreateTrackSheet />
       <UserSettingsModal />
       <AuthModal />
+      <MasteringModal />
     </div>
   );
 }

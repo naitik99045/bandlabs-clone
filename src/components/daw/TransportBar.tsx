@@ -14,7 +14,8 @@ import {
   Sliders,
   AlignLeft,
   Check,
-  RotateCcw
+  RotateCcw,
+  Activity
 } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { audioEngine, MetronomeSound } from "@/lib/audio/AudioEngine";
@@ -253,6 +254,14 @@ export function TransportBar() {
             title="16-Step Beat Maker"
           >
             <Grid className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={() => setActiveModal("mastering")}
+            className="p-1.5 rounded-sm bg-surface-2 border border-surface-border text-audio-play active:scale-95 transition"
+            title="BandLab AI Mastering Suite"
+          >
+            <Activity className="w-4 h-4" />
           </button>
 
           <button
@@ -565,6 +574,15 @@ export function TransportBar() {
           >
             <Grid className="w-3.5 h-3.5 text-audio-amber" />
             <span>Beat Maker</span>
+          </button>
+
+          {/* AI Mastering Suite Trigger */}
+          <button
+            onClick={() => setActiveModal("mastering")}
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium bg-surface-0 hover:bg-surface-2 text-chalk border border-surface-border transition"
+          >
+            <Activity className="w-3.5 h-3.5 text-brand" />
+            <span>Mastering</span>
           </button>
 
           {/* Solid Export CTA */}

@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { VocalPreferences } from "@/types/settings";
 import { audioEngine, MetronomeSound } from "@/lib/audio/AudioEngine";
+import { MasteringProfileId } from "@/lib/audio/dsp/MasteringRack";
+
+export interface MasteringSettings {
+  profileId: MasteringProfileId;
+  intensity: number;
+  bassTrim: number;
+  trebleTrim: number;
+  bypass: boolean;
+}
 
 export interface AudioClip {
   id: string;
@@ -131,8 +140,9 @@ interface StudioState {
   tracks: StudioTrack[];
   drumMatrix: DrumMatrix;
   vocalSettings: VocalPreferences;
+  masteringSettings: MasteringSettings;
   selectedTrackId: string | null;
-  activeModal: "vocal" | "beatmaker" | "export" | "settings" | null;
+  activeModal: "vocal" | "beatmaker" | "mastering" | "export" | "settings" | null;
 
   // Transport & Engine Actions
   setIsPlaying: (isPlaying: boolean) => void;
@@ -144,7 +154,8 @@ interface StudioState {
   setMetronomeSound: (sound: MetronomeSound) => void;
   setMasterVolume: (volume: number) => void;
   setSelectedTrackId: (id: string | null) => void;
-  setActiveModal: (modal: "vocal" | "beatmaker" | "export" | "settings" | null) => void;
+  setActiveModal: (modal: "vocal" | "beatmaker" | "mastering" | "export" | "settings" | null) => void;
+  updateMasteringSettings: (settings: Partial<MasteringSettings>) => void;
 
   // Track Actions
   addTrack: (type: "vocal" | "beat" | "drum", name?: string) => string;
@@ -359,6 +370,14 @@ export const useStudioStore = create<StudioState>((set, get) => ({
     eqLowCut: 100,
   },
 
+  masteringSettings: {
+    profileId: "universal",
+    intensity: 75,
+    bassTrim: 0,
+    trebleTrim: 0,
+    bypass: false,
+  },
+
   tracks: [
     {
       id: "track-beat-1",
@@ -417,6 +436,10 @@ export const useStudioStore = create<StudioState>((set, get) => ({
   setMasterVolume: (masterVolume) => set({ masterVolume: Math.min(1, Math.max(0, masterVolume)) }),
   setSelectedTrackId: (selectedTrackId) => set({ selectedTrackId }),
   setActiveModal: (activeModal) => set({ activeModal }),
+  updateMasteringSettings: (settings) =>
+    set((state) => ({
+      masteringSettings: { ...state.masteringSettings, ...settings },
+    })),
 
   addTrack: (type, name) => {
     const id = `track-${Date.now()}`;

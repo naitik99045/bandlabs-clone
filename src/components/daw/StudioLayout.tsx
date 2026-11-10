@@ -6,6 +6,7 @@ import { TimelineView } from "./TimelineView";
 import { TracksMobileView } from "./TracksMobileView";
 import { VocalSuiteModal } from "./VocalSuiteModal";
 import { BeatMakerModal } from "./BeatMakerModal";
+import { MasteringModal } from "@/components/tools/MasteringModal";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { Shield, Cpu, Activity } from "lucide-react";
@@ -122,6 +123,7 @@ function StudioCore() {
       {/* Floating Modal Windows */}
       <VocalSuiteModal />
       <BeatMakerModal />
+      <MasteringModal />
       <UserSettingsModal />
     </div>
   );

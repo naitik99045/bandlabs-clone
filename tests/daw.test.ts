@@ -5,6 +5,7 @@ import { DRUM_SOUNDS } from "../src/stores/useStudioStore";
 import { METRONOME_PRESETS, MetronomeSound } from "../src/lib/audio/AudioEngine";
 import { BANDLAB_VOCAL_PRESETS } from "../src/lib/audio/presets/vocalPresets";
 import { calculatePitchOffset } from "../src/lib/audio/dsp/EffectsRack";
+import { BANDLAB_MASTERING_PROFILES } from "../src/lib/audio/dsp/MasteringRack";
 
 describe("BandLab Clone Test Suite", () => {
   // 1. LOGIN & AUTHENTICATION TESTS
@@ -273,6 +274,37 @@ describe("BandLab Clone Test Suite", () => {
       assert.equal(isDownbeat(4), true);  // Bar 2, Beat 1: Accented
       assert.equal(isDownbeat(7), false); // Bar 2, Beat 4: Regular
       assert.equal(isDownbeat(8), true);  // Bar 3, Beat 1: Accented
+    });
+  });
+
+  // 7. BANDLAB 8-PROFILE AI MASTERING SUITE TESTS
+  describe("BandLab 8-Profile AI Mastering Suite", () => {
+    test("Mastering rack must register all 8 official BandLab profiles", () => {
+      assert.equal(BANDLAB_MASTERING_PROFILES.length, 8);
+      const expectedProfiles = [
+        "universal", "clarity", "fire", "tape",
+        "natural", "spatial", "punch", "cinematic"
+      ];
+      expectedProfiles.forEach((id) => {
+        const found = BANDLAB_MASTERING_PROFILES.find((p) => p.id === id);
+        assert.ok(found, `Missing mastering profile: ${id}`);
+        assert.ok(found.name.length > 0);
+        assert.ok(found.tag.length > 0);
+        assert.ok(found.description.length > 0);
+        assert.ok(found.color.startsWith("oklch"), `Profile ${id} must use solid OKLCH color`);
+        assert.ok(found.compressorThreshold < 0, `Threshold must be negative dBFS`);
+      });
+    });
+
+    test("Mastering profile dynamics and EQ boundaries must maintain audio headroom", () => {
+      BANDLAB_MASTERING_PROFILES.forEach((profile) => {
+        // Compressor threshold must be below 0dB to prevent uncontrolled overs
+        assert.ok(profile.compressorThreshold <= 0, `Profile ${profile.id} threshold exceeds 0dBFS`);
+        // Compression ratio must be >= 1.0
+        assert.ok(profile.compressorRatio >= 1.0, `Profile ${profile.id} compression ratio < 1.0`);
+        // Stereo width factor should be >= 1.0
+        assert.ok(profile.stereoWidth >= 1.0, `Profile ${profile.id} stereo width < 1.0`);
+      });
     });
   });
 });

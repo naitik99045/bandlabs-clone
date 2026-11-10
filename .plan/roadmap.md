@@ -31,10 +31,10 @@
   - *Action:* Upgraded `EffectsRack.ts`, `vocalPresets.ts`, and `VocalSuiteModal.tsx` with all 24 presets discovered in `com.bandlab.bandlab`: *Classic*, *Modern Rap*, *Amped*, *Robot*, *Big Harmony*, *Bitz*, *Chip*, *Drone*, *Duet*, *Futurescape*, *Gorgon*, *Halo*, *Hyper*, *Krafty*, *Natural*, *Ocean*, *Phone*, *Simulacrum*, *Stone*, *Third*, *Ultrashift*, *Voice Cleaner*, *De-Reverb*, *Noise Gate*. Configured specific DSP parameters (pitch quantization speed, interval shifts, saturation drive, chorus wet, filter cutoff).
   - *Target Files:* `src/lib/audio/dsp/EffectsRack.ts`, `src/lib/audio/presets/vocalPresets.ts`, `src/components/daw/VocalSuiteModal.tsx`, `tests/daw.test.ts`
   - *Done When:* All 24 presets appear in the vocal modal with real-time audio routing, category filtering, and 16/16 passing automated tests.
-- [ ] **Task 3.3: BandLab 8-Profile AI Mastering Suite (`MasteringActivity`)**
-  - *Action:* Create `src/lib/audio/dsp/MasteringRack.ts` and `src/components/tools/MasteringModal.tsx` replicating BandLab's official mastering suite. Implement 8 profiles: *Universal*, *Clarity*, *Fire*, *Tape*, *Natural*, *Spatial*, *Punch*, and *Cinematic*. Include real-time A/B bypass switch, Low/High EQ trims, and instant mixdown mastering export.
-  - *Target Files:* `src/lib/audio/dsp/MasteringRack.ts`, `src/components/tools/MasteringModal.tsx`, `src/stores/useStudioStore.ts`
-  - *Done When:* User can audition master tracks with all 8 profiles in real time, toggle A/B comparison, and export mastered audio.
+- [x] **Task 3.3: BandLab 8-Profile AI Mastering Suite (`MasteringActivity`)**
+  - *Action:* Created `src/lib/audio/dsp/MasteringRack.ts` and `src/components/tools/MasteringModal.tsx` replicating BandLab's official mastering suite. Implemented 8 profiles: *Universal*, *Clarity*, *Fire*, *Tape*, *Natural*, *Spatial*, *Punch*, and *Cinematic*. Includes real-time A/B bypass switch, Low/High EQ trims, intensity slider, timeline scrubbing, and instant mixdown mastering export.
+  - *Target Files:* `src/lib/audio/dsp/MasteringRack.ts`, `src/components/tools/MasteringModal.tsx`, `src/stores/useStudioStore.ts`, `src/components/dashboard/DashboardView.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `tests/daw.test.ts`
+  - *Done When:* User can audition master tracks with all 8 profiles in real time, toggle A/B comparison, and export mastered audio. Verified with 18/18 passing tests and clean Android APK build.
 - [ ] **Task 3.4: Standalone Creator Tools Suite (Tuner, Metronome & SongStarter)**
   - *Action:* Implement standalone creator tools matching BandLab's `com.bandlab.tools`:
     1. **Chromatic Tuner (`TunerModal.tsx`):** Web Audio pitch autocorrelation detecting fundamental frequency (Hz), note name (e.g., A4), and visual cents offset needle.

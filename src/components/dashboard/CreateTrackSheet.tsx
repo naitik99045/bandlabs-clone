@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useRef } from "react";
-import { X, Mic, Grid, Upload, SlidersHorizontal } from "lucide-react";
+import { X, Mic, Grid, Upload, SlidersHorizontal, Activity } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { audioEngine } from "@/lib/audio/AudioEngine";
 
 export function CreateTrackSheet() {
-  const { isCreateSheetOpen, setIsCreateSheetOpen, createNewProject, addClipToTrack, tracks } = useStudioStore();
+  const { isCreateSheetOpen, setIsCreateSheetOpen, createNewProject, addClipToTrack, tracks, setActiveModal } = useStudioStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isCreateSheetOpen) return null;
@@ -154,6 +154,32 @@ export function CreateTrackSheet() {
               </span>
               <p className="text-[11px] text-slateMuted mt-0.5 leading-snug">
                 Open full multi-track DAW with mixer, timeline, and faders.
+              </p>
+            </div>
+          </button>
+
+          {/* 5. AI Mastering Card */}
+          <button
+            onClick={() => {
+              setIsCreateSheetOpen(false);
+              setActiveModal("mastering");
+            }}
+            className="p-3.5 bg-surface-1 hover:bg-surface-2 border border-surface-border hover:border-audio-play rounded-sm text-left transition flex flex-col justify-between group col-span-1 sm:col-span-2"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-sm bg-audio-play/15 border border-audio-play/30 text-audio-play flex items-center justify-center">
+                <Activity className="w-5 h-5" />
+              </div>
+              <span className="text-[10px] font-mono text-audio-play border border-audio-play/30 px-1.5 py-0.5 rounded-none">
+                8 BandLab Algorithms
+              </span>
+            </div>
+            <div>
+              <span className="text-xs font-bold text-chalk block group-hover:text-audio-play transition">
+                BandLab AI Mastering
+              </span>
+              <p className="text-[11px] text-slateMuted mt-0.5 leading-snug">
+                Master your tracks with Universal, Clarity, Fire, Tape, Natural, Spatial, Punch, and Cinematic algorithms with real-time A/B bypass.
               </p>
             </div>
           </button>
