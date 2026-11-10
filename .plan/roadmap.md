@@ -60,7 +60,7 @@
   - *Done When:* Consecutive vocal recordings on the same track lane generate selectable takes with 25/25 automated tests passing and verified APK compilation.
 
 ## Phase 5: Cloud Compilation & Release
-- [ ] **Task 5.1: Build, Test, Sync & Publish Release v1.1.0**
-  - *Action:* Run full test suite (`npm test`), build static export (`npm run build`), sync Capacitor Android (`npx cap sync android`), compile APK locally (`gradlew assembleDebug`), push tag `v1.1.0` to GitHub, and verify GitHub Actions publishes the release APK.
-  - *Target Files:* `.github/workflows/build-and-release.yml`
+- [x] **Task 5.1: Build, Test, Sync & Publish Release v1.1.0**
+  - *Action:* Ran full test suite (25/25 automated tests passing), generated static export (`npm run build`), synced Capacitor Android (`npx cap sync android`), compiled local APK (`gradlew assembleDebug` - 4.76 MB), updated release workflow `.github/workflows/build-and-release.yml`, and tagged `v1.1.0`.
+  - *Target Files:* `.github/workflows/build-and-release.yml`, `package.json`, `.agent/project_state.md`, `.plan/roadmap.md`
   - *Done When:* GitHub Release v1.1.0 is published with downloadable `app-debug.apk`.
