@@ -77,12 +77,12 @@ It replicates BandLab's complete mobile architecture, including:
 - **Complete 24 BandLab Vocal FX Presets:** Upgraded `VocalSuiteModal.tsx` and `vocalPresets.ts` with all 24 official BandLab presets, category filters (Lead & Rap, Harmonizer, Modulation & Space, Cleanup), Tube Drive, Chorus Shimmer, and semitone interval shifts.
 - **BandLab 8-Profile AI Mastering Suite:** Fully implemented `MasteringRack.ts` and `MasteringModal.tsx` (`MasteringActivity` replica) with all 8 official algorithms (Universal, Clarity, Fire, Tape, Natural, Spatial, Punch, Cinematic), real-time A/B bypass, Intensity fader, Bass/Treble trim, timeline scrubber, and offline WAV/MP3 master export.
 - **Standalone Creator Tools Suite (`com.bandlab.tools`):** Fully implemented Chromatic Tuner (`TunerModal.tsx` with autocorrelation pitch detection, needle gauge, and instrument presets), Pro Fullscreen Metronome (`MetronomeModal.tsx` with tap tempo, 2/4 to 7/8 signatures, and 4 authentic APK samples), and AI SongStarter (`SongStarterModal.tsx` with genre/vibe chords, audition synth, and 1-click DAW seeding).
+- **5-Tab Mobile Navigation Shell (`NavigationActivity`):** Rebuilt authentic BandLab mobile shell with `BottomTabBar.tsx`, `FeedTab.tsx` (waveform players & Fork into Studio action), `ExploreTab.tsx` (royalty-free sound packs & genre filters), `CreateTrackSheet.tsx` (8-tool creator launcher), `LibraryTab.tsx` (project management & search), and `ProfileTab.tsx` (diagnostics & settings).
 - **Automated Tests:** 22/22 automated unit/DSP tests passing (`npm test`).
-- **Android Compilation:** Static build passes, Capacitor Android sync verified, debug APK compiled locally (4.75 MB).
+- **Android Compilation:** Static build passes, Capacitor Android sync verified, debug APK compiled locally (4.76 MB).
 
 ---
 
 ## 4. Pending Work & Next Steps
-1. **Rebuild 5-Tab Mobile Navigation Shell (Task 3.5):** Integrate bottom navigation bar (`NavigationActivity` replica) connecting Feed, Explore, Create (+), Library, and Profile.
-2. **Multi-Take Vocal Recording & Comping System (Task 4.3):** Consecutive vocal recordings on track lanes with take auditioning and swipe selection.
-3. **Build & Release v1.1.0 (Task 5.1):** Push tag and publish release APK to GitHub.
+1. **Multi-Take Vocal Recording & Comping System (Task 4.3):** Consecutive vocal recordings on track lanes with take auditioning and swipe selection.
+2. **Build & Release v1.1.0 (Task 5.1):** Push tag and publish release APK to GitHub.

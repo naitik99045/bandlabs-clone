@@ -42,10 +42,10 @@
     3. **AI SongStarter (`SongStarterModal.tsx`):** Beat & melody inspiration generator for Trap, Hip Hop, Pop, R&B, Lo-Fi, and UK Drill that generates chord voicings, key, BPM, and drum matrix grooves with 1-click studio DAW seeding.
   - *Target Files:* `src/lib/audio/dsp/PitchDetector.ts`, `src/components/tools/TunerModal.tsx`, `src/components/tools/MetronomeModal.tsx`, `src/components/tools/SongStarterModal.tsx`, `src/components/dashboard/CreateTrackSheet.tsx`, `src/components/dashboard/DashboardView.tsx`, `src/components/daw/StudioLayout.tsx`, `tests/daw.test.ts`
   - *Done When:* All three standalone tools can be launched from the Create (+) Sheet and Studio, backed by 22/22 passing automated tests and clean Android APK build.
-- [ ] **Task 3.5: 5-Tab Mobile Navigation Shell (`NavigationActivity`)**
-  - *Action:* Build BandLab's authentic bottom navigation bar in `src/components/navigation/BottomTabBar.tsx`: **Feed** (community tracks & waveform player), **Explore** (trending genres & sound packs), **Create (+)** (pulsing red studio launcher), **Library** (my projects & templates), and **Profile** (user stats & settings).
-  - *Target Files:* `src/components/navigation/BottomTabBar.tsx`, `src/app/page.tsx`, `src/stores/useStudioStore.ts`
-  - *Done When:* Mobile shell seamlessly switches between the 5 tabs, keeping the DAW accessible in 1 tap from the center Create button.
+- [x] **Task 3.5: 5-Tab Mobile Navigation Shell (`NavigationActivity`)**
+  - *Action:* Built BandLab's authentic bottom navigation bar in `src/components/navigation/BottomTabBar.tsx` and connected all 5 destinations: **Feed** (`FeedTab.tsx` with community waveform previews & Fork into Studio action), **Explore** (`ExploreTab.tsx` with genre filters & free royalty-free sound packs), **Create (+)** (centered elevated tactile button opening 8 creator tools), **Library** (`LibraryTab.tsx` with project manager, search, and DAW launch), and **Profile** (`ProfileTab.tsx` with hardware diagnostics, cache stats, and account settings).
+  - *Target Files:* `src/components/navigation/BottomTabBar.tsx`, `src/components/navigation/FeedTab.tsx`, `src/components/navigation/ExploreTab.tsx`, `src/components/navigation/LibraryTab.tsx`, `src/components/navigation/ProfileTab.tsx`, `src/components/dashboard/DashboardView.tsx`
+  - *Done When:* Mobile shell seamlessly switches between the 5 tabs, keeping the DAW accessible in 1 tap from the center Create button. Verified with 22/22 passing tests and clean Android APK build.
 
 ## Phase 4: UI Polish, Edge Cases & Android Stability
 - [x] **Task 4.1: `qwenton-ui` Redesign & Zero AI Slop Implementation**
