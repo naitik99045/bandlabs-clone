@@ -1,22 +1,42 @@
-# 🎛️ BandLab Clone — Cloud DAW & Vocal Production Suite
+# 🎛️ BandLab Clone — Exact Mobile Replica & Cloud DAW
 
-A high-performance, 100% free multi-track Digital Audio Workstation (DAW) and vocal production workstation reverse-engineered from **BandLab**. Built for musicians, vocalists, and beatmakers to record, tune, produce beats, and export studio-quality music with zero server compute costs.
+A high-performance, 100% free multi-track Digital Audio Workstation (DAW), vocal production workstation, and creator tools suite reverse-engineered directly from **BandLab Android APK v11.35.3 (`com.bandlab.bandlab`)**. Built for musicians, vocalists, and beatmakers to record, tune, produce beats, master tracks, and export studio-quality music with zero server compute costs.
 
-Available as both a **Next.js Web Studio** (deployable on Vercel) and a **Native Android App** (via Capacitor).
+[![Latest Release](https://img.shields.io/github/v/release/naitik99045/bandlabs-clone?label=Latest%20APK%20Release&color=00d2ff)](https://github.com/naitik99045/bandlabs-clone/releases/latest)
+[![Tests Passing](https://img.shields.io/badge/Tests-25%20passing-success)](tests/daw.test.ts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+### 📱 Download Android APK
+👉 **[Download app-debug.apk (v1.1.0)](https://github.com/naitik99045/bandlabs-clone/releases/download/v1.1.0/app-debug.apk)** (4.72 MB)  
+👉 **[View GitHub Release v1.1.0 Notes](https://github.com/naitik99045/bandlabs-clone/releases/tag/v1.1.0)**
 
 ---
 
 ## ✨ Features
 
-### 🎙️ BandLab Vocal Suite & Real-Time AutoPitch
-- **AutoPitch Tuning:** Dual-delay granular pitch-shifting DSP engine (`PitchShifterNode`) that snaps vocal frequencies to your selected musical scale (Major, Minor, Pentatonic, Chromatic) and adjustable correction speed (from subtle 100% natural to robotic 0ms T-Pain / Travis Scott hard-tune).
-- **Acoustic & Timbral Modulations:**
-  - **LFO Chorus & Vibrato:** Modulated delay network providing vocal width and stereo shimmer.
-  - **Analog Tube Saturation:** WaveShaper non-linear harmonic saturation for warm vocal preamps.
-  - **4-Band Parametric EQ:** Low-cut rumble filter (100Hz) and high-presence boost.
-  - **Studio Vocal Compressor:** Dynamics compressor with ratio, threshold, and attack/release leveling.
-  - **Space Reverb & Tempo Delay:** Algorithmic convolution reverb and tempo-synced ping-pong echo.
-- **Iconic Vocal Presets:** *Studio Rap*, *Hyperpop 0ms*, *Warm Vintage*, *Spaced Out*, and *Clean Studio*.
+### 🎛️ 5-Tab Mobile Navigation Shell (`NavigationActivity` Replica)
+- **Feed:** Community music stream with waveform preview players, like/comment counters, and 1-tap **"Fork into Studio"** remixing.
+- **Explore:** Search bar, genre chips (Trap, UK Drill, Lo-Fi, Hip Hop, Pop), and free royalty-free sound packs (*808 Heatwave Mafia*, *Smokey Dusty Rhodes*, *London Drill Arsenal*, *AutoPitch Vocal Chops*).
+- **Create (+):** Centered elevated tactile hardware launcher opening the 8 creator tools.
+- **Library:** Full multi-project manager with search, track counts, BPM/Key badges, and studio DAW open.
+- **Profile:** Producer profile, engine diagnostics (0.0ms Web Audio core), and offline audio cache manager.
+
+### 🎙️ All 24 Official BandLab Vocal FX Presets & AutoPitch
+- Snapping vocals to 12 musical keys and scales across 5 intensity levels (Subtle to Hard-tune).
+- Complete vocal suite (*Classic*, *Modern Rap*, *Amped*, *Robot*, *Big Harmony*, *Bitz*, *Chip*, *Drone*, *Duet*, *Futurescape*, *Gorgon*, *Halo*, *Hyper*, *Krafty*, *Natural*, *Ocean*, *Phone*, *Simulacrum*, *Stone*, *Third*, *Ultrashift*, *Voice Cleaner*, *De-Reverb*, *Noise Gate*).
+- Real-time tube saturation drive, chorus shimmer, and semitone interval shifts.
+
+### 🎚️ BandLab 8-Profile AI Mastering Suite (`MasteringActivity` Replica)
+- Universal, Clarity, Fire, Tape, Natural, Spatial, Punch, and Cinematic algorithms.
+- Real-time A/B bypass comparison switch, Intensity fader, Bass/Treble trim, timeline scrubbing, and offline master export.
+
+### 🧰 Standalone Creator Tools Suite (`com.bandlab.tools` Replicas)
+- **Chromatic Tuner:** Autocorrelation pitch detection (±3¢ Signal Mint in-tune indicator) with Guitar, Bass, Ukulele, and Violin presets.
+- **Pro Metronome:** Fullscreen pendulum, tap-tempo calculator, time signatures (2/4 to 7/8), subdivisions, and 4 authentic BandLab APK audio samples (`clave`, `hat`, `rim`, `sineburst`).
+- **AI SongStarter:** Instant chord progressions, key, BPM, and drum groove generation with 1-click studio DAW seeding.
+
+### 🎙️ Multi-Take Vocal Recording & Comping (`About Takes`)
+- Non-destructive vocal take tracking on track lanes with interactive Take pills (`Take 1`, `Take 2`, `Take 3...`), solo take auditioning (▶), and master comp promotion (★).
 
 ### 🎹 Multi-Track DAW Timeline & Audio Import
 - Multi-channel timeline with track mute (`M`), solo (`S`), volume, pan faders, and track color coding.
