@@ -19,6 +19,7 @@ export interface AudioClip {
   audioBuffer: AudioBuffer | null;
   audioBlob?: Blob;
   peaks?: number[]; // for waveform drawing
+  takeNumber?: number; // e.g. 1, 2, 3 (BandLab About Takes)
 }
 
 export interface StudioTrack {
@@ -32,6 +33,7 @@ export interface StudioTrack {
   isSoloed: boolean;
   isArmed: boolean; // ready for mic recording
   clips: AudioClip[];
+  activeTakeIndex?: number; // active comped take index
 }
 
 export interface DrumStep {
@@ -163,6 +165,7 @@ interface StudioState {
   updateTrack: (id: string, updates: Partial<StudioTrack>) => void;
   addClipToTrack: (trackId: string, clip: AudioClip) => void;
   removeClip: (trackId: string, clipId: string) => void;
+  setActiveTake: (trackId: string, takeIndex: number) => void;
 
   // Drum Sequencer Actions
   toggleDrumStep: (soundIndex: number, stepIndex: number) => void;
@@ -487,17 +490,44 @@ export const useStudioStore = create<StudioState>((set, get) => ({
 
   addClipToTrack: (trackId, clip) =>
     set((state) => ({
-      tracks: state.tracks.map((t) =>
-        t.id === trackId ? { ...t, clips: [...t.clips, clip] } : t
-      ),
+      tracks: state.tracks.map((t) => {
+        if (t.id !== trackId) return t;
+        const takeNum = t.clips.length + 1;
+        const newClip: AudioClip = {
+          ...clip,
+          takeNumber: takeNum,
+          name: clip.name.startsWith("Take") || clip.name.startsWith("Vocal Take") || clip.name.startsWith("clip-")
+            ? `Take ${takeNum}`
+            : clip.name,
+        };
+        const updatedClips = [...t.clips, newClip];
+        return {
+          ...t,
+          clips: updatedClips,
+          activeTakeIndex: updatedClips.length - 1, // comp latest take by default
+        };
+      }),
     })),
 
   removeClip: (trackId, clipId) =>
     set((state) => ({
+      tracks: state.tracks.map((t) => {
+        if (t.id !== trackId) return t;
+        const filtered = t.clips.filter((c) => c.id !== clipId);
+        const currentIdx = t.activeTakeIndex ?? 0;
+        const newIdx = Math.max(0, Math.min(filtered.length - 1, currentIdx));
+        return {
+          ...t,
+          clips: filtered,
+          activeTakeIndex: newIdx,
+        };
+      }),
+    })),
+
+  setActiveTake: (trackId, takeIndex) =>
+    set((state) => ({
       tracks: state.tracks.map((t) =>
-        t.id === trackId
-          ? { ...t, clips: t.clips.filter((c) => c.id !== clipId) }
-          : t
+        t.id === trackId ? { ...t, activeTakeIndex: takeIndex } : t
       ),
     })),
 

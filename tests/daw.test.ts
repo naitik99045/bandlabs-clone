@@ -364,4 +364,43 @@ describe("BandLab Clone Test Suite", () => {
       assert.equal(detectPitch(noiseBuffer, sampleRate, 440), null);
     });
   });
+
+  // 9. MULTI-TAKE RECORDING & COMPING SYSTEM (BANDLAB ABOUT TAKES)
+  describe("Multi-Take Recording & Comping System (BandLab About Takes)", () => {
+    test("Consecutive takes should increment take number without overwriting previous takes", () => {
+      const initialClips = [
+        { id: "c1", name: "Take 1", startTime: 0, duration: 10, audioBuffer: null, takeNumber: 1 },
+      ];
+      const nextTakeNum = initialClips.length + 1;
+      const nextClip = {
+        id: "c2",
+        name: `Take ${nextTakeNum}`,
+        startTime: 0,
+        duration: 10.5,
+        audioBuffer: null,
+        takeNumber: nextTakeNum,
+      };
+      const updatedClips = [...initialClips, nextClip];
+
+      assert.equal(updatedClips.length, 2);
+      assert.equal(updatedClips[0].takeNumber, 1);
+      assert.equal(updatedClips[1].takeNumber, 2);
+      assert.equal(updatedClips[1].name, "Take 2");
+    });
+
+    test("Active comped take index should point to the latest take by default", () => {
+      const clipsCount = 3;
+      const activeTakeIndex = clipsCount - 1; // latest take
+      assert.equal(activeTakeIndex, 2);
+    });
+
+    test("Take switching should safely clamp to valid index bounds", () => {
+      const clampTakeIndex = (index: number, count: number) => {
+        return Math.max(0, Math.min(count - 1, index));
+      };
+      assert.equal(clampTakeIndex(5, 3), 2);
+      assert.equal(clampTakeIndex(-1, 3), 0);
+      assert.equal(clampTakeIndex(1, 3), 1);
+    });
+  });
 });

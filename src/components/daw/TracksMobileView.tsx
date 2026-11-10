@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Volume2, Mic, Music, Trash2, Upload, Plus, Sliders, Grid } from "lucide-react";
-import { useStudioStore, StudioTrack } from "@/stores/useStudioStore";
+import { Volume2, Mic, Music, Trash2, Upload, Plus, Sliders, Grid, Play, Pause, Star, Layers, Check } from "lucide-react";
+import { useStudioStore, StudioTrack, AudioClip } from "@/stores/useStudioStore";
 import { audioEngine } from "@/lib/audio/AudioEngine";
 
 export function TracksMobileView() {
@@ -12,10 +12,50 @@ export function TracksMobileView() {
     removeTrack, 
     addTrack, 
     addClipToTrack, 
+    removeClip,
+    setActiveTake,
     selectedTrackId, 
     setSelectedTrackId,
     setActiveModal,
   } = useStudioStore();
+
+  const [auditioningClipId, setAuditioningClipId] = React.useState<string | null>(null);
+  const auditionSourceRef = React.useRef<AudioBufferSourceNode | null>(null);
+
+  const handleAuditionTake = (clip: AudioClip) => {
+    if (auditioningClipId === clip.id) {
+      if (auditionSourceRef.current) {
+        try {
+          auditionSourceRef.current.stop();
+          auditionSourceRef.current.disconnect();
+        } catch {}
+        auditionSourceRef.current = null;
+      }
+      setAuditioningClipId(null);
+      return;
+    }
+
+    if (!clip.audioBuffer) return;
+    audioEngine.init();
+    const ctx = audioEngine.getContext();
+    if (auditionSourceRef.current) {
+      try {
+        auditionSourceRef.current.stop();
+        auditionSourceRef.current.disconnect();
+      } catch {}
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = clip.audioBuffer;
+    source.connect(ctx.destination);
+    source.onended = () => {
+      setAuditioningClipId(null);
+      auditionSourceRef.current = null;
+    };
+    source.start(0);
+    auditionSourceRef.current = source;
+    setAuditioningClipId(clip.id);
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const activeUploadTrackIdRef = useRef<string | null>(null);
@@ -211,23 +251,119 @@ export function TracksMobileView() {
               </div>
             </div>
 
-            {/* Clips & Waveform Display */}
+            {/* Takes & Waveform Comping System (BandLab About Takes) */}
             {track.clips.length > 0 ? (
-              <div className="space-y-1.5 pt-1">
-                {track.clips.map((clip) => (
-                  <div
-                    key={clip.id}
-                    className="p-2.5 bg-surface-0 border border-surface-border rounded-sm flex items-center justify-between text-xs"
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      <span className="text-brand font-mono text-[10px]">▶</span>
-                      <span className="text-chalk font-semibold truncate text-[11px]">{clip.name}</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-slateMuted shrink-0">
-                      {clip.duration.toFixed(1)}s
+              <div className="space-y-2 pt-1">
+                {/* Take Selector Strip */}
+                {track.clips.length > 1 && (
+                  <div className="flex items-center justify-between text-[10px] font-mono border-b border-surface-border/50 pb-1.5">
+                    <span className="text-steel flex items-center gap-1 font-bold">
+                      <Layers className="w-3 h-3 text-brand" />
+                      <span>TAKES ({track.clips.length})</span>
                     </span>
+                    <span className="text-slateMuted">Tap to comp active take</span>
                   </div>
-                ))}
+                )}
+
+                {/* Take Pills */}
+                {track.clips.length > 1 && (
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                    {track.clips.map((clip, takeIdx) => {
+                      const isActive = (track.activeTakeIndex ?? track.clips.length - 1) === takeIdx;
+                      return (
+                        <button
+                          key={clip.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveTake(track.id, takeIdx);
+                          }}
+                          className={`px-2.5 py-1 text-[11px] font-mono border transition flex items-center gap-1 whitespace-nowrap ${
+                            isActive
+                              ? "bg-brand text-surface-0 border-brand font-bold"
+                              : "bg-surface-0 text-slateMuted border-surface-border hover:text-chalk"
+                          }`}
+                        >
+                          {isActive && <Star className="w-3 h-3 fill-surface-0" />}
+                          <span>Take {takeIdx + 1}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Active Take Card & Audition */}
+                {(() => {
+                  const activeIdx = Math.min(
+                    track.clips.length - 1,
+                    track.activeTakeIndex ?? track.clips.length - 1
+                  );
+                  const activeClip = track.clips[activeIdx] || track.clips[0];
+                  const isAuditioning = auditioningClipId === activeClip.id;
+
+                  return (
+                    <div className="p-3 bg-surface-0 border border-surface-border space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 truncate">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAuditionTake(activeClip);
+                            }}
+                            className={`p-1.5 border transition ${
+                              isAuditioning
+                                ? "bg-brand border-brand text-surface-0"
+                                : "bg-surface-2 border-surface-border text-brand hover:bg-surface-strong"
+                            }`}
+                            title={isAuditioning ? "Pause Audition" : "Audition Take"}
+                          >
+                            {isAuditioning ? (
+                              <Pause className="w-3.5 h-3.5 fill-surface-0" />
+                            ) : (
+                              <Play className="w-3.5 h-3.5 fill-brand" />
+                            )}
+                          </button>
+
+                          <div className="truncate">
+                            <span className="text-xs font-bold text-chalk truncate block">
+                              {activeClip.name}
+                            </span>
+                            <span className="text-[10px] font-mono text-steel block">
+                              {activeClip.duration.toFixed(1)}s • Master Comp
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeClip(track.id, activeClip.id);
+                            }}
+                            className="p-1.5 text-slateMuted hover:text-audio-rec transition"
+                            title="Delete this take"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Mini Waveform Visualization */}
+                      {activeClip.peaks && activeClip.peaks.length > 0 && (
+                        <div className="h-6 flex items-center gap-0.5 bg-surface-1 p-1 border border-surface-border overflow-hidden">
+                          {activeClip.peaks.slice(0, 50).map((peak, pIdx) => (
+                            <div
+                              key={pIdx}
+                              className={`flex-1 transition-all ${
+                                isAuditioning ? "bg-brand" : "bg-steel"
+                              }`}
+                              style={{ height: `${Math.max(15, peak * 100)}%` }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             ) : (
               <div className="p-3 bg-surface-0 border border-dashed border-surface-border rounded-sm flex items-center justify-between text-xs text-slateMuted">
