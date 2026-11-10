@@ -33,17 +33,17 @@ export function createVocalEffectsChain(ctx: AudioContext, prefs: VocalPreferenc
 
   // 2. Real-Time Pitch Shifter & AutoPitch Modulation
   const pitchShifter = new PitchShifterNode(ctx);
-  // Calculate semitone shift based on root key or preset speed
-  const semitones = calculatePitchOffset(prefs.key || "C", prefs.correctionSpeed || 80);
+  // Calculate semitone shift based on root key, preset speed, or explicit pitch offset
+  const semitones = calculatePitchOffset(prefs.key || "C", prefs.correctionSpeed || 80, prefs.pitchShiftSemitones);
   pitchShifter.setPitch(prefs.autoPitchEnabled ? semitones : 0);
   pitchShifter.setEnabled(prefs.autoPitchEnabled ?? true);
 
   // 3. Analog Tube / Tape Saturation
-  const saturation = createSaturationNode(ctx, 15);
+  const saturation = createSaturationNode(ctx, prefs.saturationDrive || 15);
 
   // 4. LFO Chorus Modulation
   const chorus = new ChorusModulationNode(ctx, 1.2, 0.002);
-  chorus.setWet(0.2);
+  chorus.setWet(prefs.chorusWet !== undefined ? prefs.chorusWet : 0.2);
 
   // 5. Presence Peak EQ
   const eqPeak = ctx.createBiquadFilter();
@@ -125,8 +125,11 @@ export function createVocalEffectsChain(ctx: AudioContext, prefs: VocalPreferenc
   };
 }
 
-// Convert musical scale and correction speed to semitone modulation
-function calculatePitchOffset(key: string, speed: number): number {
+// Convert musical scale, correction speed, and explicit semitone interval to modulation offset
+export function calculatePitchOffset(key: string, speed: number, explicitShift?: number): number {
+  if (explicitShift !== undefined && explicitShift !== 0) {
+    return explicitShift;
+  }
   const keyOffsets: Record<string, number> = {
     "C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5,
     "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11
@@ -162,7 +165,11 @@ export function updateVocalChainParams(nodes: VocalNodes, prefs: VocalPreference
   nodes.delayWet.gain.setTargetAtTime(prefs.delayWet, now, 0.05);
   nodes.reverbWet.gain.setTargetAtTime(prefs.reverbWet, now, 0.05);
 
-  const semitones = calculatePitchOffset(prefs.key || "C", prefs.correctionSpeed || 80);
+  if (prefs.chorusWet !== undefined) {
+    nodes.chorus.setWet(prefs.chorusWet);
+  }
+
+  const semitones = calculatePitchOffset(prefs.key || "C", prefs.correctionSpeed || 80, prefs.pitchShiftSemitones);
   nodes.pitchShifter.setPitch(prefs.autoPitchEnabled ? semitones : 0);
   nodes.pitchShifter.setEnabled(prefs.autoPitchEnabled);
 }

@@ -9,6 +9,10 @@ export interface VocalPreferences {
   compressionRatio: number; // 1 to 20
   eqHighBoost: number; // dB
   eqLowCut: number; // Hz
+  pitchShiftSemitones?: number; // -12 to +12
+  saturationDrive?: number; // 0 to 100
+  chorusWet?: number; // 0 to 1
+  activePresetId?: string;
 }
 
 export interface BeatPreferences {

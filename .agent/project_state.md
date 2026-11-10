@@ -74,13 +74,13 @@ It replicates BandLab's complete mobile architecture, including:
 - **Visual Design System:** Clean solid 60-30-10 OKLCH theme (Gunmetal Flint base, Slate structure, Signal Mint accent) with strictly zero gradients and zero AI slop.
 - **Audio DSP Core:** `PitchShifterNode`, `ModulationNode`, `EffectsRack`, `MixdownExporter`, `WavEncoder`, and 16-step beat machine.
 - **Authentic BandLab Metronome Sound Engine:** Connected 8 extracted `.m4a` files (`clave`, `hat`, `rim`, `sineburst`) with real-time buffer caching, sound preset cycling in Mobile Transport Dock and Desktop Header, and audition tester in User Settings.
-- **Automated Tests:** 14/14 automated unit/DSP tests passing (`npm test`).
-- **Android Compilation:** Static build passes, Capacitor Android sync verified, debug APK compiled locally (4.71 MB) with all 8 authentic metronome sounds embedded.
+- **Complete 24 BandLab Vocal FX Presets:** Upgraded `VocalSuiteModal.tsx` and `vocalPresets.ts` with all 24 official BandLab presets, category filters (Lead & Rap, Harmonizer, Modulation & Space, Cleanup), Tube Drive, Chorus Shimmer, and semitone interval shifts.
+- **Automated Tests:** 16/16 automated unit/DSP tests passing (`npm test`).
+- **Android Compilation:** Static build passes, Capacitor Android sync verified, debug APK compiled locally (4.71 MB) with all 24 vocal presets and DSP chains.
 
 ---
 
 ## 4. Pending Work & Next Steps
-1. **Expand Vocal FX Suite to 24 Presets:** Implement the complete reverse-engineered preset list into `src/lib/audio/dsp/EffectsRack.ts` and `VocalSuiteModal.tsx`.
-2. **Implement BandLab 8-Preset Mastering Suite:** Build dedicated `MasteringModal.tsx` (`MasteringActivity` replica) with Universal, Clarity, Fire, Tape, Natural, Spatial, Punch, and Cinematic algorithms, A/B toggle, and EQ.
-3. **Implement Standalone Tools Hub:** Build Tuner tool, Metronome tool, and AI SongStarter generator into the Create (+) Sheet.
-4. **Rebuild 5-Tab Mobile Shell:** Integrate bottom navigation bar (`NavigationActivity` replica) connecting Feed, Explore, Create (+), Library, and Profile.
+1. **Implement BandLab 8-Preset Mastering Suite:** Build dedicated `MasteringModal.tsx` (`MasteringActivity` replica) with Universal, Clarity, Fire, Tape, Natural, Spatial, Punch, and Cinematic algorithms, A/B toggle, and EQ.
+2. **Implement Standalone Tools Hub:** Build Tuner tool, Metronome tool, and AI SongStarter generator into the Create (+) Sheet.
+3. **Rebuild 5-Tab Mobile Shell:** Integrate bottom navigation bar (`NavigationActivity` replica) connecting Feed, Explore, Create (+), Library, and Profile.

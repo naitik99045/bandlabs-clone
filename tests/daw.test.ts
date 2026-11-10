@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { DEFAULT_USER_SETTINGS, UserSettings } from "../src/types/settings";
 import { DRUM_SOUNDS } from "../src/stores/useStudioStore";
 import { METRONOME_PRESETS, MetronomeSound } from "../src/lib/audio/AudioEngine";
+import { BANDLAB_VOCAL_PRESETS } from "../src/lib/audio/presets/vocalPresets";
+import { calculatePitchOffset } from "../src/lib/audio/dsp/EffectsRack";
 
 describe("BandLab Clone Test Suite", () => {
   // 1. LOGIN & AUTHENTICATION TESTS
@@ -116,6 +118,33 @@ describe("BandLab Clone Test Suite", () => {
       assert.equal(isHardTune(25), true);  // Trap autotune
       assert.equal(isHardTune(60), false); // Natural assist
       assert.equal(isHardTune(85), false); // Subtle studio
+    });
+
+    test("BandLab Vocal FX Preset catalog must contain all 24 reverse-engineered profiles", () => {
+      assert.equal(BANDLAB_VOCAL_PRESETS.length, 24);
+      const expectedPresets = [
+        "classic", "modern-rap", "amped", "robot", "big-harmony", "bitz",
+        "chip", "drone", "duet", "futurescape", "gorgon", "halo",
+        "hyperpop", "krafty", "natural", "ocean", "phone", "simulacrum",
+        "stone", "third", "ultrashift", "voice-cleaner", "de-reverb", "noise-gate"
+      ];
+      expectedPresets.forEach((id) => {
+        const found = BANDLAB_VOCAL_PRESETS.find((p) => p.id === id);
+        assert.ok(found, `Missing vocal preset: ${id}`);
+        assert.ok(found.name.length > 0);
+        assert.ok(found.color.startsWith("oklch"), `Preset ${id} must use solid OKLCH color`);
+      });
+    });
+
+    test("Harmonizer and interval presets must calculate precise semitone transpositions", () => {
+      // Octave up (+12)
+      assert.equal(calculatePitchOffset("C", 80, 12), 12);
+      // Octave down (-12)
+      assert.equal(calculatePitchOffset("C", 80, -12), -12);
+      // Perfect fifth (+7)
+      assert.equal(calculatePitchOffset("C", 80, 7), 7);
+      // Major third (+4)
+      assert.equal(calculatePitchOffset("C", 80, 4), 4);
     });
   });
 
