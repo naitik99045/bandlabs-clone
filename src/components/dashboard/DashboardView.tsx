@@ -42,10 +42,11 @@ export function DashboardView() {
     setCurrentView,
     setActiveModal,
     setIsAuthModalOpen,
+    mobileNavTab,
+    setMobileNavTab,
   } = useStudioStore();
 
   const { user, guestId } = useAuth();
-  const [activeBottomNav, setActiveBottomNav] = useState<NavTabType>("feed");
 
   const starterTemplates = [
     {
@@ -77,7 +78,7 @@ export function DashboardView() {
   return (
     <div className="flex flex-col h-screen w-screen bg-surface-0 text-chalk overflow-hidden select-none">
       {/* Top Mobile Header */}
-      <header className="h-14 border-b border-surface-border bg-surface-1 px-4 flex items-center justify-between shrink-0">
+      <header className="h-[calc(3.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-surface-border bg-surface-1 px-4 flex items-center justify-between shrink-0">
         <button
           onClick={() => setCurrentView("landing")}
           className="flex items-center gap-2.5 hover:opacity-85 transition"
@@ -122,8 +123,8 @@ export function DashboardView() {
       </header>
 
       {/* Main Content Area (Scrollable) */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6 pb-24 space-y-6 max-w-4xl mx-auto w-full">
-        {activeBottomNav === "feed" && (
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 pb-[calc(5rem+env(safe-area-inset-bottom))] space-y-6 max-w-4xl mx-auto w-full">
+        {mobileNavTab === "feed" && (
           <div className="space-y-6">
             {/* Hero Create Action Banner */}
             <div className="bg-surface-1 border border-surface-border p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -304,13 +305,13 @@ export function DashboardView() {
           </div>
         )}
 
-        {activeBottomNav === "explore" && <ExploreTab />}
-        {activeBottomNav === "library" && <LibraryTab />}
-        {activeBottomNav === "profile" && <ProfileTab />}
+        {mobileNavTab === "explore" && <ExploreTab />}
+        {mobileNavTab === "library" && <LibraryTab />}
+        {mobileNavTab === "profile" && <ProfileTab />}
       </main>
 
       {/* Tactile Hardware Mobile Bottom Navigation Bar (5-Tab BandLab NavigationActivity Replica) */}
-      <BottomTabBar activeTab={activeBottomNav} onSelectTab={setActiveBottomNav} />
+      <BottomTabBar activeTab={mobileNavTab} onSelectTab={setMobileNavTab} />
 
       {/* Modals & Creation Sheets */}
       <CreateTrackSheet />

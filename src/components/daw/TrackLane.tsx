@@ -66,33 +66,33 @@ export function TrackLane({ track }: TrackLaneProps) {
       }`}
     >
       {/* Track Controls Sidebar */}
-      <div className="w-64 border-r border-surface-border p-2.5 flex flex-col justify-between shrink-0 bg-surface-1">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 truncate">
+      <div className="w-28 sm:w-64 border-r border-surface-border p-2 sm:p-2.5 flex flex-col justify-between shrink-0 bg-surface-1">
+        <div className="flex items-center justify-between gap-1">
+          <div className="flex items-center gap-1.5 truncate">
             <span
               className="w-2 h-2 shrink-0 rounded-none"
               style={{ backgroundColor: track.color }}
             />
-            <span className="text-xs font-semibold text-chalk truncate">
+            <span className="text-[11px] sm:text-xs font-semibold text-chalk truncate">
               {track.name}
             </span>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 sm:gap-1">
             {/* Record Arm Button */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 updateTrack(track.id, { isArmed: !track.isArmed });
               }}
-              className={`px-1.5 py-0.5 text-[10px] font-mono font-bold tracking-wider transition rounded-sm ${
+              className={`px-1 sm:px-1.5 py-0.5 text-[9px] sm:text-[10px] font-mono font-bold tracking-wider transition rounded-sm ${
                 track.isArmed
                   ? "bg-audio-rec text-white"
                   : "bg-surface-2 border border-surface-border text-slateMuted hover:text-chalk"
               }`}
               title="Arm Track for Live Recording"
             >
-              REC
+              R
             </button>
 
             {/* Mute Button */}
@@ -101,7 +101,7 @@ export function TrackLane({ track }: TrackLaneProps) {
                 e.stopPropagation();
                 updateTrack(track.id, { isMuted: !track.isMuted });
               }}
-              className={`w-5 h-5 flex items-center justify-center text-[10px] font-mono font-bold transition rounded-sm ${
+              className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[9px] sm:text-[10px] font-mono font-bold transition rounded-sm ${
                 track.isMuted
                   ? "bg-audio-amber text-surface-0"
                   : "bg-surface-2 border border-surface-border text-slateMuted hover:text-chalk"
@@ -117,7 +117,7 @@ export function TrackLane({ track }: TrackLaneProps) {
                 e.stopPropagation();
                 updateTrack(track.id, { isSoloed: !track.isSoloed });
               }}
-              className={`w-5 h-5 flex items-center justify-center text-[10px] font-mono font-bold transition rounded-sm ${
+              className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[9px] sm:text-[10px] font-mono font-bold transition rounded-sm ${
                 track.isSoloed
                   ? "bg-audio-cyan text-surface-0"
                   : "bg-surface-2 border border-surface-border text-slateMuted hover:text-chalk"
@@ -133,7 +133,7 @@ export function TrackLane({ track }: TrackLaneProps) {
                 e.stopPropagation();
                 removeTrack(track.id);
               }}
-              className="p-1 rounded-sm text-slateMuted hover:text-brand transition"
+              className="p-0.5 sm:p-1 rounded-sm text-slateMuted hover:text-brand transition hidden sm:inline-flex"
               title="Delete Track"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -142,9 +142,9 @@ export function TrackLane({ track }: TrackLaneProps) {
         </div>
 
         {/* Volume & Pan Faders */}
-        <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5 flex-1">
-            <Volume2 className="w-3 h-3 text-slateMuted shrink-0" />
+        <div className="flex items-center gap-1.5 sm:gap-3 text-xs">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-1">
+            <Volume2 className="w-3 h-3 text-slateMuted shrink-0 hidden sm:inline" />
             <input
               type="range"
               min={0}
@@ -154,12 +154,12 @@ export function TrackLane({ track }: TrackLaneProps) {
               onChange={(e) => updateTrack(track.id, { volume: parseFloat(e.target.value) })}
               className="w-full h-1 bg-surface-border rounded-none appearance-none cursor-pointer"
             />
-            <span className="text-[10px] font-mono-numbers text-steel w-8 text-right">
+            <span className="text-[9px] sm:text-[10px] font-mono-numbers text-steel w-6 sm:w-8 text-right">
               {Math.round(track.volume * 100)}%
             </span>
           </div>
 
-          <div className="flex items-center gap-1 w-16">
+          <div className="hidden sm:flex items-center gap-1 w-16">
             <span className="text-[9px] font-mono text-slateMuted">PAN</span>
             <input
               type="range"

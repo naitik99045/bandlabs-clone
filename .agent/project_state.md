@@ -83,9 +83,14 @@ It replicates BandLab's complete mobile architecture, including:
 - **Android Compilation:** Static build passes, Capacitor Android sync verified, debug APK compiled locally (4.76 MB).
 
 - **Release v1.1.0 Published:** Successfully published to GitHub Releases at `https://github.com/naitik99045/bandlabs-clone/releases/tag/v1.1.0` with downloadable `app-debug.apk` (4.72 MB).
+- **Native Android System Back Button & Gesture Navigation:** Implemented `OnBackPressedCallback` in `MainActivity.java` with `AndroidNativeBridge.exitApp()` and custom `androidBackButton` dispatcher. Hierarchical dismissal in `useAndroidBackButton.ts` (modals -> creation sheet -> auth modal -> studio-to-dashboard -> tab-to-feed -> 2-tap exit toast).
+- **Edge-to-Edge Safe Area Insets (`viewportFit: cover`):** Exported Next.js `Viewport` configuration with `viewportFit: "cover"` and `themeColor: "#13161c"`. Integrated `env(safe-area-inset-*)` paddings across `BottomTabBar`, `TransportBar`, `StudioLayout`, `DashboardView`, `LandingView`, and dialog containers.
+- **Native System Bar Theming:** Configured `styles.xml` with Gunmetal Flint (`#13161c`) status and navigation bars, eliminating white navigation bar clashes.
+- **Responsive Mobile Arranger Timeline:** Sized track control headers responsively (`w-28 sm:w-64`) with dynamic playhead and seeking measurement, optimizing multitrack editing on portrait phone screens.
+- **Android Touch Target Compliance (48dp):** Adjusted bottom navigation tabs and transport controls to meet Android Material 48dp baseline.
 
 ---
 
 ## 4. Pending Work & Next Steps
-1. All roadmap tasks (Phases 1 through 5) successfully executed, verified, and published!
-2. Continuous updates & user feedback monitoring.
+1. Push `v1.1.1` release tag to GitHub Actions CI/CD to publish updated APK release.
+2. Monitor user feedback on mobile device playback and touch ergonomics.

@@ -296,8 +296,16 @@ export function SongStarterModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/85 p-3 sm:p-4 select-none animate-in fade-in duration-150">
-      <div className="bg-surface-1 border border-surface-border w-full max-w-lg overflow-hidden flex flex-col max-h-[95vh] shadow-2xl">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          stopPreview();
+          setActiveModal(null);
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/85 p-3 sm:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] select-none animate-in fade-in duration-150"
+    >
+      <div className="bg-surface-1 border border-surface-border w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
         {/* Header */}
         <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2">
@@ -317,7 +325,7 @@ export function SongStarterModal() {
               stopPreview();
               setActiveModal(null);
             }}
-            className="p-1.5 hover:bg-surface-2 text-slateMuted hover:text-chalk transition border border-transparent hover:border-surface-border"
+            className="w-9 h-9 flex items-center justify-center rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
             title="Close SongStarter"
           >
             <X className="w-5 h-5" />

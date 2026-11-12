@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { LandingView } from "@/components/landing/LandingView";
 import { DashboardView } from "@/components/dashboard/DashboardView";
+import { AndroidBackHandler } from "@/components/common/AndroidBackHandler";
 
 // Dynamically import StudioLayout with ssr: false so Web Audio API and window context work seamlessly
 const StudioLayout = dynamic(
@@ -48,6 +49,7 @@ export default function HomePage() {
     <ErrorBoundary>
       <AuthProvider>
         <AppViewSwitcher />
+        <AndroidBackHandler />
       </AuthProvider>
     </ErrorBoundary>
   );

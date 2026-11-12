@@ -7,8 +7,8 @@ A high-performance, 100% free multi-track Digital Audio Workstation (DAW), vocal
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ### 📱 Download Android APK
-👉 **[Download app-debug.apk (v1.1.0)](https://github.com/naitik99045/bandlabs-clone/releases/download/v1.1.0/app-debug.apk)** (4.72 MB)  
-👉 **[View GitHub Release v1.1.0 Notes](https://github.com/naitik99045/bandlabs-clone/releases/tag/v1.1.0)**
+👉 **[Download app-debug.apk (v1.1.1)](https://github.com/naitik99045/bandlabs-clone/releases/download/v1.1.1/app-debug.apk)** (5.04 MB)  
+👉 **[View GitHub Release v1.1.1 Notes](https://github.com/naitik99045/bandlabs-clone/releases/tag/v1.1.1)**
 
 ---
 

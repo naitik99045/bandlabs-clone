@@ -112,6 +112,10 @@ interface StudioState {
   mobileActiveTab: "tracks" | "timeline";
   setMobileActiveTab: (tab: "tracks" | "timeline") => void;
 
+  // Mobile Bottom Navigation Tab
+  mobileNavTab: "feed" | "explore" | "library" | "profile";
+  setMobileNavTab: (tab: "feed" | "explore" | "library" | "profile") => void;
+
   // Project Management
   currentProjectId: string;
   projectName: string;
@@ -182,6 +186,9 @@ export const useStudioStore = create<StudioState>((set, get) => ({
 
   mobileActiveTab: "tracks",
   setMobileActiveTab: (mobileActiveTab) => set({ mobileActiveTab }),
+
+  mobileNavTab: "feed",
+  setMobileNavTab: (mobileNavTab) => set({ mobileNavTab }),
 
   currentProjectId: "proj-session-1",
   projectName: "Untitled Session 1",

@@ -24,7 +24,7 @@ export function LandingView() {
   return (
     <div className="min-h-screen w-screen bg-surface-0 text-chalk flex flex-col justify-between overflow-x-hidden select-none">
       {/* 1. Minimalist Top Bar with 1px Solid Border */}
-      <header className="h-14 border-b border-surface-border px-4 sm:px-8 flex items-center justify-between bg-surface-1 shrink-0">
+      <header className="h-[calc(3.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-surface-border px-4 sm:px-8 flex items-center justify-between bg-surface-1 shrink-0">
         <div className="flex items-center gap-2.5">
           <span className="w-2.5 h-2.5 bg-brand shrink-0" />
           <span className="font-bold tracking-tight text-sm text-chalk">
@@ -201,7 +201,7 @@ export function LandingView() {
       </main>
 
       {/* 4. Structured Legal & Compliance Footer */}
-      <footer className="h-14 border-t border-surface-border px-4 sm:px-8 flex items-center justify-between text-[11px] font-mono text-slateMuted bg-surface-1 shrink-0">
+      <footer className="h-[calc(3.5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] border-t border-surface-border px-4 sm:px-8 flex items-center justify-between text-[11px] font-mono text-slateMuted bg-surface-1 shrink-0">
         <span>BANDLAB CLONE • STUDIO PRO WORKSTATION</span>
         <button
           onClick={() => setCurrentView("dashboard")}

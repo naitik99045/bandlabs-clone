@@ -43,8 +43,13 @@ export function CreateTrackSheet() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-surface-0/80 p-0 sm:p-4 select-none">
-      <div className="bg-surface-1 border-t sm:border border-surface-border w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setIsCreateSheetOpen(false);
+      }}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-surface-0/80 p-0 sm:p-4 select-none"
+    >
+      <div className="bg-surface-1 border-t sm:border border-surface-border w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-0">
         {/* Header */}
         <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div>
@@ -58,7 +63,8 @@ export function CreateTrackSheet() {
 
           <button
             onClick={() => setIsCreateSheetOpen(false)}
-            className="p-1.5 rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
+            className="w-9 h-9 flex items-center justify-center rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
+            title="Close Sheet"
           >
             <X className="w-5 h-5" />
           </button>

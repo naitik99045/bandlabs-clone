@@ -45,8 +45,16 @@ export function BeatMakerModal() {
   if (activeModal !== "beatmaker") return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/80 p-4 select-none">
-      <div className="bg-surface-1 border border-surface-border w-full max-w-4xl overflow-hidden flex flex-col">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          setIsPlayingBeat(false);
+          setActiveModal(null);
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/80 p-3 sm:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] select-none"
+    >
+      <div className="bg-surface-1 border border-surface-border w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2.5">
@@ -78,7 +86,7 @@ export function BeatMakerModal() {
 
             <button
               onClick={clearDrumMatrix}
-              className="p-1.5 rounded-sm bg-surface-2 border border-surface-border text-slateMuted hover:text-brand transition"
+              className="w-9 h-9 flex items-center justify-center rounded-sm bg-surface-2 border border-surface-border text-slateMuted hover:text-brand transition"
               title="Clear 16-Step Pattern"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -89,7 +97,7 @@ export function BeatMakerModal() {
                 setIsPlayingBeat(false);
                 setActiveModal(null);
               }}
-              className="p-1.5 rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
+              className="w-9 h-9 flex items-center justify-center rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
             >
               <X className="w-4 h-4" />
             </button>

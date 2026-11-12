@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Mic, Music, Plus } from "lucide-react";
 import { useStudioStore } from "@/stores/useStudioStore";
 import { TrackLane } from "./TrackLane";
@@ -14,12 +14,26 @@ export function TimelineView() {
   } = useStudioStore();
 
   const timelineContainerRef = useRef<HTMLDivElement>(null);
+  const rulerHeaderRef = useRef<HTMLDivElement>(null);
+  const [headerWidth, setHeaderWidth] = useState(256);
   const pxPerSecond = 20;
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (rulerHeaderRef.current) {
+        setHeaderWidth(rulerHeaderRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   // Handle clicking on ruler to seek
   const handleRulerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left - 256; // Offset by track control width (w-64 = 256px)
+    const currentHeaderWidth = rulerHeaderRef.current?.offsetWidth || headerWidth;
+    const clickX = e.clientX - rect.left - currentHeaderWidth;
     if (clickX >= 0) {
       setCurrentTime(clickX / pxPerSecond);
     }
@@ -32,9 +46,12 @@ export function TimelineView() {
         onClick={handleRulerClick}
         className="h-7 border-b border-surface-border bg-surface-1 flex shrink-0 cursor-pointer relative"
       >
-        <div className="w-64 border-r border-surface-border px-3 flex items-center justify-between text-[11px] font-mono text-steel uppercase tracking-wider shrink-0 bg-surface-1">
+        <div
+          ref={rulerHeaderRef}
+          className="w-28 sm:w-64 border-r border-surface-border px-2 sm:px-3 flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-steel uppercase tracking-wider shrink-0 bg-surface-1"
+        >
           <span>Tracks ({tracks.length})</span>
-          <span className="text-[10px] text-slateMuted">1 px = 50ms</span>
+          <span className="hidden sm:inline text-[10px] text-slateMuted">1 px = 50ms</span>
         </div>
 
         {/* Ruler Ticks */}
@@ -59,7 +76,7 @@ export function TimelineView() {
         {/* Synchronized Vertical Playhead Line (Solid Brand Color - Strictly No Glows) */}
         <div
           style={{
-            left: `${256 + currentTime * pxPerSecond}px`,
+            left: `${headerWidth + currentTime * pxPerSecond}px`,
           }}
           className="absolute top-0 bottom-0 w-[2px] bg-brand z-30 pointer-events-none"
         >

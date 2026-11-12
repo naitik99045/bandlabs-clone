@@ -66,8 +66,13 @@ export function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/80 p-4 select-none">
-      <div className="bg-surface-1 border border-surface-border w-full max-w-md overflow-hidden flex flex-col">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setIsAuthModalOpen(false);
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/80 p-3 sm:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] select-none"
+    >
+      <div className="bg-surface-1 border border-surface-border w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2">
@@ -79,7 +84,8 @@ export function AuthModal() {
 
           <button
             onClick={() => setIsAuthModalOpen(false)}
-            className="p-1 rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
+            className="w-9 h-9 flex items-center justify-center rounded-sm hover:bg-surface-2 text-slateMuted hover:text-chalk transition"
+            title="Close Auth"
           >
             <X className="w-4 h-4" />
           </button>

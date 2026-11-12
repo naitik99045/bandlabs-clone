@@ -65,7 +65,7 @@ function StudioCore() {
       <TransportBar />
 
       {/* Center Multitrack Timeline & Mobile Tracks View */}
-      <main className="flex-1 overflow-hidden flex flex-col pb-14 sm:pb-0">
+      <main className="flex-1 overflow-hidden flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0">
         <div className="flex-1 flex overflow-hidden">
           <div className={`flex-1 flex flex-col ${mobileActiveTab === "tracks" ? "flex" : "hidden"} sm:hidden`}>
             <TracksMobileView />

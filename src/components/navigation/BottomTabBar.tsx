@@ -22,11 +22,11 @@ export function BottomTabBar({ activeTab, onSelectTab }: BottomTabBarProps) {
   const { setIsCreateSheetOpen, setCurrentView } = useStudioStore();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-surface-1 border-t border-surface-border px-4 sm:px-8 flex items-center justify-between z-40 max-w-lg mx-auto sm:max-w-none select-none shadow-xl">
+    <nav className="fixed bottom-0 left-0 right-0 h-[calc(4rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-surface-1 border-t border-surface-border px-4 sm:px-8 flex items-center justify-between z-40 max-w-lg mx-auto sm:max-w-none select-none shadow-xl">
       {/* 1. Feed / Home Tab */}
       <button
         onClick={() => onSelectTab("feed")}
-        className={`flex-1 flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
+        className={`flex-1 min-h-[48px] flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
           activeTab === "feed" ? "text-brand font-bold" : "text-slateMuted hover:text-chalk"
         }`}
       >
@@ -40,7 +40,7 @@ export function BottomTabBar({ activeTab, onSelectTab }: BottomTabBarProps) {
       {/* 2. Explore Tab */}
       <button
         onClick={() => onSelectTab("explore")}
-        className={`flex-1 flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
+        className={`flex-1 min-h-[48px] flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
           activeTab === "explore" ? "text-brand font-bold" : "text-slateMuted hover:text-chalk"
         }`}
       >
@@ -68,7 +68,7 @@ export function BottomTabBar({ activeTab, onSelectTab }: BottomTabBarProps) {
       {/* 4. Library Tab */}
       <button
         onClick={() => onSelectTab("library")}
-        className={`flex-1 flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
+        className={`flex-1 min-h-[48px] flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
           activeTab === "library" ? "text-brand font-bold" : "text-slateMuted hover:text-chalk"
         }`}
       >
@@ -82,7 +82,7 @@ export function BottomTabBar({ activeTab, onSelectTab }: BottomTabBarProps) {
       {/* 5. Profile Tab */}
       <button
         onClick={() => onSelectTab("profile")}
-        className={`flex-1 flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
+        className={`flex-1 min-h-[48px] flex flex-col items-center justify-center gap-1 text-[10px] font-mono transition py-1 relative ${
           activeTab === "profile" ? "text-brand font-bold" : "text-slateMuted hover:text-chalk"
         }`}
       >

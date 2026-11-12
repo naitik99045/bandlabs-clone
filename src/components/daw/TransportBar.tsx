@@ -198,12 +198,12 @@ export function TransportBar() {
   return (
     <>
       {/* 📱 100% Android Native Mobile Top App Bar (< sm) */}
-      <header className="sm:hidden border-b border-surface-border bg-surface-1 px-3 py-2.5 flex items-center justify-between select-none shrink-0 z-30">
+      <header className="sm:hidden border-b border-surface-border bg-surface-1 px-3 pt-[calc(0.625rem+env(safe-area-inset-top))] pb-2.5 flex items-center justify-between select-none shrink-0 z-30">
         {/* Left: Return & Project Title */}
         <div className="flex items-center gap-2 truncate">
           <button
             onClick={() => setCurrentView("dashboard")}
-            className="flex items-center justify-center p-1.5 rounded-sm bg-surface-2 border border-surface-border text-steel hover:text-chalk active:scale-95 transition"
+            className="flex items-center justify-center w-8 h-8 rounded-sm bg-surface-2 border border-surface-border text-steel hover:text-chalk active:scale-95 transition shrink-0"
             title="Return to Projects Dashboard"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -285,7 +285,7 @@ export function TransportBar() {
       </header>
 
       {/* 📱 100% Android Native Bottom Transport Dock (< sm) */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-1 border-t border-surface-border px-3 py-2 flex items-center justify-between select-none">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-1 border-t border-surface-border px-3 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex items-center justify-between select-none">
         {/* Left: View Switcher (Tracks vs Arranger) & Timecode */}
         <div className="flex items-center gap-2">
           <div className="flex border border-surface-border overflow-hidden text-[10px] font-mono">
@@ -330,7 +330,7 @@ export function TransportBar() {
           {/* Tactile Hardware Play / Pause */}
           <button
             onClick={handlePlayToggle}
-            className={`w-11 h-11 border flex items-center justify-center active:scale-95 transition ${
+            className={`w-12 h-12 border flex items-center justify-center active:scale-95 transition ${
               isPlaying
                 ? "bg-audio-play text-surface-0 border-audio-play font-bold"
                 : "bg-surface-2 border-surface-border text-chalk hover:border-brand hover:text-brand"
@@ -347,7 +347,7 @@ export function TransportBar() {
           {/* Tactile Hardware Carmine Record */}
           <button
             onClick={handleRecordToggle}
-            className={`w-11 h-11 border flex items-center justify-center active:scale-95 transition ${
+            className={`w-12 h-12 border flex items-center justify-center active:scale-95 transition ${
               isRecording
                 ? "bg-audio-rec text-white border-audio-rec animate-pulse font-bold"
                 : "bg-surface-2 border-audio-rec/60 text-audio-rec hover:border-audio-rec"
